@@ -4,6 +4,7 @@ import { ReporterServices } from "./reporter.service";
 const createReporterController = async (req: Request, res: Response) => {
   try {
     const reporter = req.body;
+    console.log(reporter)
     const result = ReporterServices.createReporterIntoDB(reporter);
     res.status(200).json({
       success: true,
