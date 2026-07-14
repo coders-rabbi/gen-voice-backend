@@ -9,4 +9,5 @@ router.get(
   "/:reporterId",
   ReporterController.getSingleReporterUsingReportIdController,
 );
+// router.put('/:id', )
 export const ReporterRoutes = router;

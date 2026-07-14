@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export type TReporterName = {
   firstName: string;
   middleName?: string;
@@ -21,3 +23,19 @@ export type TReporter = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+//Static Methods
+export interface ReporterModel extends Model<TReporter> {
+  isReporterExists(id: string): Promise<TReporter | null>;
+}
+
+// custom instace
+// export type ReporterMethods = {
+//   isReporterExists(id: string): Promise<TReporter | null>;
+// };
+
+// export type ReporterModel = Model<
+//   TReporter,
+//   Record<string, never>,
+//   ReporterMethods
+// >;

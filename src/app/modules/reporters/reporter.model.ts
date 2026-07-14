@@ -1,13 +1,13 @@
 import { model, Schema } from "mongoose";
-import { TReporterName, TReporter } from "./reporter.interface";
+import { TReporterName, TReporter, ReporterModel } from "./reporter.interface";
 
 const ReporterNameSchema = new Schema<TReporterName>({
-  firstName: { type: String, required: true },
-  middleName: { type: String },
-  lastName: { type: String, required: true },
+  firstName: { type: String, required: true, trim: true },
+  middleName: { type: String, trim: true },
+  lastName: { type: String, required: true, trim: true },
 });
 
-const ReporterSchema = new Schema<TReporter>(
+const ReporterSchema = new Schema<TReporter, ReporterModel>(
   {
     id: {
       type: String,
@@ -35,6 +35,7 @@ const ReporterSchema = new Schema<TReporter>(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
 
     bloodGroup: {
@@ -45,16 +46,19 @@ const ReporterSchema = new Schema<TReporter>(
     contactNo: {
       type: String,
       required: true,
+      trim: true,
     },
 
     presentAddress: {
       type: String,
       required: true,
+      trim: true,
     },
 
     permanentAddress: {
       type: String,
       required: true,
+      trim: true,
     },
 
     profileImage: {
@@ -64,6 +68,7 @@ const ReporterSchema = new Schema<TReporter>(
     designation: {
       type: String,
       required: true,
+      trim: true,
     },
 
     facebook: {
@@ -80,4 +85,20 @@ const ReporterSchema = new Schema<TReporter>(
     timestamps: true,
   },
 );
-export const ReporterModel = model<TReporter>("Reporter", ReporterSchema);
+
+//custom static methods
+ReporterSchema.statics.isReporterExists = async function (id: string) {
+  const ExistingReport = await Reporter.findOne({ id });
+  return ExistingReport;
+};
+
+// custom instance method
+// ReporterSchema.methods.isReporterExists = async function (id: string) {
+//   const ExistingReporter = await Reporter.findOne({ id });
+//   return ExistingReporter;
+// };
+
+export const Reporter = model<TReporter, ReporterModel>(
+  "Reporter",
+  ReporterSchema,
+);

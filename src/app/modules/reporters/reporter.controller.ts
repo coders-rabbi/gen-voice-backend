@@ -10,11 +10,11 @@ const createReporterController = async (req: Request, res: Response) => {
       message: "Reporter is created successfully",
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     res.status(500).json({
       success: false,
-      message: "Something went wrong!",
+      message: err.message || "Something went wrong!",
       error: err,
     });
   }
@@ -61,6 +61,8 @@ const getSingleReporterUsingReportIdController = async (
     });
   }
 };
+
+// const updateSingleReporter.
 
 export const ReporterController = {
   createReporterController,
