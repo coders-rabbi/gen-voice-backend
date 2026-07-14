@@ -9,7 +9,7 @@ export const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-app.use("api/v1/reporters", ReporterRoutes);
+app.use("/api/v1/reporters", ReporterRoutes);
 app.get("/", (req: Request, res: Response) => {
   res.send("Gen Voice Server is running...");
 });
