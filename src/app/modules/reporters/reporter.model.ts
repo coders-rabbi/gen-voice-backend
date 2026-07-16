@@ -1,7 +1,6 @@
 import { model, Schema } from "mongoose";
 import { TReporterName, TReporter, ReporterModel } from "./reporter.interface";
-import bcrypt from 'bcrypt'
-
+import bcrypt from "bcrypt";
 
 const ReporterNameSchema = new Schema<TReporterName>({
   firstName: { type: String, required: true, trim: true },
@@ -85,6 +84,9 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   },
 );
 
@@ -99,6 +101,10 @@ ReporterSchema.statics.isReporterExists = async function (id: string) {
 //   const ExistingReporter = await Reporter.findOne({ id });
 //   return ExistingReporter;
 // };
+
+ReporterSchema.virtual("fullName").get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+});
 
 export const Reporter = model<TReporter, ReporterModel>(
   "Reporter",
