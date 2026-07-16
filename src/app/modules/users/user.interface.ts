@@ -2,11 +2,11 @@ import { Model } from "mongoose";
 
 // user.interface.ts
 export type TUser = {
-  email: string; // Use lowercase 'string'
-  password: string; // Use lowercase 'string'
-  role: string; // Use lowercase 'string'
+  email: string;
+  password: string;
+  role: string;
   isDeleted: boolean;
-  status?: string; // Use lowercase 'string'
+  status?: string;
 };
 
 export interface UserModel extends Model<TUser> {

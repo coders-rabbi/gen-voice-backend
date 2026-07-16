@@ -1,5 +1,7 @@
+import config from "../../config";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
+import bcrypt from "bcrypt";
 
 const createUserIntoDB = async (userData: TUser) => {
   const result = await User.create(userData);
@@ -17,6 +19,23 @@ const getSingleUserFromDB = async (id: string) => {
   return result;
 };
 
+const updateSingleUserFromBD = async (id: string, newPassword: string) => {
+  const hashedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+  await User.updateOne(
+    { _id: id },
+    {
+      $set: {
+        password: hashedPassword,
+      },
+    },
+  );
+
+  //যেহেতু password tai return korbo na.
+};
+
 const deleteUserFromDB = async (id: string) => {
   const result = await User.updateOne({ _id: id }, { isDeleted: true });
   return result;
@@ -27,4 +46,5 @@ export const UserServices = {
   deleteUserFromDB,
   getAllUsersFromDB,
   getSingleUserFromDB,
+  updateSingleUserFromBD,
 };

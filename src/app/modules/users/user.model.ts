@@ -37,7 +37,7 @@ UserSchema.pre("find", async function () {
 
 //aggregate middleware
 UserSchema.pre("aggregate", async function () {
-  this.pipeline().unshift({ $match: { isDeled: { $ne: true } } });
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 });
 
 export const User = model<TUser, UserModel>("User", UserSchema);

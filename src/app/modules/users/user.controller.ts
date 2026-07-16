@@ -54,6 +54,29 @@ const getSingleUserController = async (req: Request, res: Response) => {
   }
 };
 
+const updatePasswordController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+    console.log(id, password);
+    const result = await UserServices.updateSingleUserFromBD(
+      id as string,
+      password,
+    );
+    res.status(200).json({
+      success: true,
+      message: "Succuessfully recover your password!",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || "Something went wrong!",
+      error: err,
+    });
+  }
+};
+
 const deleteUserController = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -77,4 +100,5 @@ export const UserController = {
   deleteUserController,
   getAllUserController,
   getSingleUserController,
+  updatePasswordController,
 };
