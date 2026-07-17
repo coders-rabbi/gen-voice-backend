@@ -5,11 +5,15 @@ import config from "../../config";
 
 const UserSchema = new Schema<TUser>(
   {
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true },
     role: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
-    status: { type: String },
+    isActive: {
+      type: String,
+      enum: ["active", "blocked"],
+      default: "active",
+    },
   },
   {
     timestamps: true,

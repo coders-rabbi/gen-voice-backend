@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 export type TReporterName = {
   firstName: string;
@@ -8,10 +8,10 @@ export type TReporterName = {
 
 export type TReporter = {
   id: string;
+  user: Types.ObjectId;
   name: TReporterName;
   gender: "male" | "female";
   dateOfBirth: Date;
-  email: string;
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-";
   contactNo: string;
   presentAddress: string;
@@ -19,7 +19,6 @@ export type TReporter = {
   profileImage?: string;
   designation: string;
   facebook?: string;
-  isActive?: "active" | "blocked";
   createdAt?: Date;
   updatedAt?: Date;
 };

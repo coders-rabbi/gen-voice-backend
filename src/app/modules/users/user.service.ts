@@ -1,11 +1,24 @@
 import config from "../../config";
+import { TReporter } from "../reporters/reporter.interface";
+import { Reporter } from "../reporters/reporter.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import bcrypt from "bcrypt";
 
-const createUserIntoDB = async (userData: TUser) => {
-  const result = await User.create(userData);
-  return result;
+const createReporterIntoDB = async (
+  userData: TUser,
+  reporterData: TReporter,
+) => {
+  //user create into db
+  userData.role = "student";
+  const newUser = await User.create(userData);
+
+  //create a reporter into db
+  if (Object.keys(newUser).length) {
+    reporterData.user = newUser._id;
+    const result = await Reporter.create(reporterData);
+    return result;
+  }
 };
 
 const getAllUsersFromDB = async () => {
@@ -42,7 +55,7 @@ const deleteUserFromDB = async (id: string) => {
 };
 
 export const UserServices = {
-  createUserIntoDB,
+  createUserIntoDB: createReporterIntoDB,
   deleteUserFromDB,
   getAllUsersFromDB,
   getSingleUserFromDB,

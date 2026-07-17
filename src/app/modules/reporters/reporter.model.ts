@@ -15,6 +15,12 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
       required: true,
       unique: true,
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      unique: true,
+      ref: "User",
+    },
 
     name: {
       type: ReporterNameSchema,
@@ -30,13 +36,6 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
     dateOfBirth: {
       type: Date,
       required: true,
-    },
-
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
     },
 
     bloodGroup: {
@@ -74,12 +73,6 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
 
     facebook: {
       type: String,
-    },
-
-    isActive: {
-      type: String,
-      enum: ["active", "blocked"],
-      default: "active",
     },
   },
   {

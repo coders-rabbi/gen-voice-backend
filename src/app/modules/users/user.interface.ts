@@ -6,7 +6,7 @@ export type TUser = {
   password: string;
   role: string;
   isDeleted: boolean;
-  status?: string;
+  isActive?: "active" | "blocked";
 };
 
 export interface UserModel extends Model<TUser> {
