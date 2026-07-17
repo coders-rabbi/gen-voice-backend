@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserServices } from "./user.service";
+import sendResponse from "../../utils/sendreponse";
+import { StatusCodes } from "http-status-codes";
 
 const createUserController = async (
   req: Request,
@@ -9,9 +11,10 @@ const createUserController = async (
   try {
     const { userData, reporterData } = req.body;
     const result = await UserServices.createUserIntoDB(userData, reporterData);
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "User Create Successfully",
+      message: "User create successfull",
       data: result,
     });
   } catch (err) {
@@ -26,9 +29,10 @@ const getAllUserController = async (
 ) => {
   try {
     const result = await UserServices.getAllUsersFromDB();
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "Successfully retrive the user data from the database",
+      message: "User successfully retrive from the database",
       data: result,
     });
   } catch (err) {
@@ -44,9 +48,10 @@ const getSingleUserController = async (
   try {
     const { id } = req.params;
     const result = await UserServices.getSingleUserFromDB(id as string);
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "Successfully retrive single data from the database",
+      message: "User successfully retrive from the database",
       data: result,
     });
   } catch (err) {
@@ -67,9 +72,10 @@ const updatePasswordController = async (
       id as string,
       password,
     );
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "Succuessfully recover your password!",
+      message: "Password recover successfull",
       data: result,
     });
   } catch (err: any) {
@@ -85,9 +91,10 @@ const deleteUserController = async (
   try {
     const { id } = req.params;
     const result = await UserServices.deleteUserFromDB(id as string);
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "Succefully deleted the user",
+      message: "User successfully delete from the database",
       data: result,
     });
   } catch (err: any) {

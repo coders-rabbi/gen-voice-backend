@@ -4,6 +4,7 @@ import { ReporterRoutes } from "./app/modules/reporters/reporter.route";
 import { UserRouters } from "./app/modules/users/user.route";
 import { NewsRouter } from "./app/modules/news/news.route";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
+import notFound from "./app/middleware/notfound";
 
 export const app: Application = express();
 export const port = 3000;
@@ -19,4 +20,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Gen Voice Server is running...");
 });
 
+//moddleWare
 app.use(globalErrorHandler);
+app.use(notFound);

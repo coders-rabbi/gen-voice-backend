@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ReporterServices } from "./reporter.service";
+import sendResponse from "../../utils/sendreponse";
+import { StatusCodes } from "http-status-codes";
 
 const createReporterController = async (
   req: Request,
@@ -9,9 +11,10 @@ const createReporterController = async (
   try {
     const { reporter: reporterData } = req.body;
     const result = await ReporterServices.createReporterIntoDB(reporterData);
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "Reporter is created successfully",
+      message: "Reporter create successfully ",
       data: result,
     });
   } catch (err) {
@@ -26,9 +29,10 @@ const getAllReporterController = async (
 ) => {
   try {
     const result = await ReporterServices.getAllReporterFromDB();
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "Reporters are retrived successfully",
+      message: "Reporter successfully retrive from the database",
       data: result,
     });
   } catch (err) {
@@ -46,9 +50,10 @@ const getSingleReporterUsingReportIdController = async (
     const result = await ReporterServices.getSingleReporterUsingReporterId(
       reporterId as string,
     );
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "Reporter is retrive successfully",
+      message: "Reporter successfully retrive from the database",
       data: result,
     });
   } catch (err) {

@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { NewsServices } from "./news.services";
+import sendResponse from "../../utils/sendreponse";
+import { StatusCodes } from "http-status-codes";
 
 const createNewsController = async (
   req: Request,
@@ -9,9 +11,10 @@ const createNewsController = async (
   try {
     const newsData = req.body;
     const result = await NewsServices.createNewsIntoDB(newsData);
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "News Create Successfully created!",
+      message: "News create successfully",
       data: result,
     });
   } catch (err: any) {
@@ -26,9 +29,10 @@ const getAllNewsController = async (
 ) => {
   try {
     const result = await NewsServices.getAllNewsFromDB();
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
       success: true,
-      message: "All news are succefully retrived",
+      message: "All news are successfully retrive from the database",
       data: result,
     });
   } catch (err: any) {
