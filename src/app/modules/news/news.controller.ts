@@ -2,50 +2,31 @@ import { NextFunction, Request, Response } from "express";
 import { NewsServices } from "./news.services";
 import sendResponse from "../../utils/sendreponse";
 import { StatusCodes } from "http-status-codes";
+import catchAsync from "../../utils/catchAsync";
 
-const createNewsController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const newsData = req.body;
-    const result = await NewsServices.createNewsIntoDB(newsData);
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "News create successfully",
-      data: result,
-    });
-  } catch (err: any) {
-    next(err);
-  }
-};
+const createNewsController = catchAsync(async (req, res) => {
+  const newsData = req.body;
+  const result = await NewsServices.createNewsIntoDB(newsData);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "News create successfully",
+    data: result,
+  });
+});
 
-const getAllNewsController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const result = await NewsServices.getAllNewsFromDB();
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "All news are successfully retrive from the database",
-      data: result,
-    });
-  } catch (err: any) {
-    next(err);
-  }
-};
+const getAllNewsController = catchAsync(async (req, res, next) => {
+  const result = await NewsServices.getAllNewsFromDB();
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "All news are successfully retrive from the database",
+    data: result,
+  });
+});
 
-const getSingleNewsController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+const getSingleNewsController = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     console.log(id);
     const result = await NewsServices.getSingleNewsFromDB(id as string);
@@ -54,10 +35,8 @@ const getSingleNewsController = async (
       message: "Succesfully retrive a news from the database",
       data: result,
     });
-  } catch (err) {
-    next(err);
-  }
-};
+  },
+);
 
 export const NewsControllers = {
   createNewsController,
