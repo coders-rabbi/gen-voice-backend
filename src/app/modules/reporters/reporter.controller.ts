@@ -1,7 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ReporterServices } from "./reporter.service";
 
-const createReporterController = async (req: Request, res: Response) => {
+const createReporterController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { reporter: reporterData } = req.body;
     const result = await ReporterServices.createReporterIntoDB(reporterData);
@@ -10,17 +14,16 @@ const createReporterController = async (req: Request, res: Response) => {
       message: "Reporter is created successfully",
       data: result,
     });
-  } catch (err: any) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: err.message || "Something went wrong!",
-      error: err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
-const getAllReporterController = async (req: Request, res: Response) => {
+const getAllReporterController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const result = await ReporterServices.getAllReporterFromDB();
     res.status(200).json({
@@ -29,18 +32,14 @@ const getAllReporterController = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: err,
-    });
+    next(err);
   }
 };
 
 const getSingleReporterUsingReportIdController = async (
   req: Request,
   res: Response,
+  next: NextFunction,
 ) => {
   try {
     const { reporterId } = req.params;
@@ -53,12 +52,7 @@ const getSingleReporterUsingReportIdController = async (
       data: result,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: err,
-    });
+    next(err);
   }
 };
 

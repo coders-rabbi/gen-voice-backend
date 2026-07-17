@@ -1,7 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { NewsServices } from "./news.services";
 
-const createNewsController = async (req: Request, res: Response) => {
+const createNewsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const newsData = req.body;
     const result = await NewsServices.createNewsIntoDB(newsData);
@@ -11,15 +15,15 @@ const createNewsController = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || "Something Went Wrong",
-      error: err,
-    });
+    next(err);
   }
 };
 
-const getAllNewsController = async (req: Request, res: Response) => {
+const getAllNewsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const result = await NewsServices.getAllNewsFromDB();
     res.status(200).json({
@@ -28,15 +32,15 @@ const getAllNewsController = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || "Something went wrong",
-      error: err,
-    });
+    next(err);
   }
 };
 
-const getSingleNewsController = async (req: Request, res: Response) => {
+const getSingleNewsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     console.log(id);
@@ -46,12 +50,8 @@ const getSingleNewsController = async (req: Request, res: Response) => {
       message: "Succesfully retrive a news from the database",
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || "Something went wrong",
-      error: err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
