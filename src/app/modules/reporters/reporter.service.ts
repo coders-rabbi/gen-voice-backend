@@ -28,12 +28,36 @@ const getSingleReporterUsingReporterId = async (reporterId: string) => {
   return result;
 };
 
-// const updateReporterInfoFromDB = async(id: string) =>[
-//   const
-// ]
+const updateSingleReporterInfoFromDB = async (
+  id: string,
+  payload: Partial<TReporter>,
+) => {
+  const { name, ...remainingReporterData } = payload || {};
+
+  const updatedReporterData: Record<string, unknown> = {
+    ...remainingReporterData,
+  };
+
+  if (name && typeof name === "object" && !Array.isArray(name)) {
+    for (const [key, value] of Object.entries(name)) {
+      updatedReporterData[`name.${key}`] = value;
+    }
+  }
+  const result = await Reporter.findOneAndUpdate(
+    { id },
+    { $set: updatedReporterData },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  return result;
+};
 
 export const ReporterServices = {
   createReporterIntoDB,
   getAllReporterFromDB,
   getSingleReporterUsingReporterId,
+  updateSingleReporterInfoFromDB,
 };
