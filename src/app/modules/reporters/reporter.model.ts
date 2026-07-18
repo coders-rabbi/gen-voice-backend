@@ -1,7 +1,5 @@
 import { model, Schema } from "mongoose";
 import { TReporterName, TReporter, ReporterModel } from "./reporter.interface";
-import bcrypt from "bcrypt";
-
 const ReporterNameSchema = new Schema<TReporterName>({
   firstName: { type: String, required: true, trim: true },
   middleName: { type: String, trim: true },
