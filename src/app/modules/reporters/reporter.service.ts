@@ -18,7 +18,7 @@ const getAllReporterFromDB = async () => {
 const getSingleReporterUsingReporterId = async (reporterId: string) => {
   const result = await Reporter.findOne({
     id: reporterId,
-  });
+  }).populate("news");
   return result;
 };
 

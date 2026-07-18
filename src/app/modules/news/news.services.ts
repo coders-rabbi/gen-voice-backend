@@ -7,7 +7,7 @@ const createNewsIntoDB = async (newsData: Tnews) => {
 };
 
 const getAllNewsFromDB = async () => {
-  const result = await News.find();
+  const result = await News.find().populate("reporterId");
   return result;
 };
 

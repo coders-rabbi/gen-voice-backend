@@ -8,11 +8,11 @@ const router = Router();
 const modulesRoutes = [
   {
     path: "/users",
-    route: ReporterRoutes,
+    route: UserRouters,
   },
   {
     path: "/reporters",
-    route: UserRouters,
+    route: ReporterRoutes,
   },
   {
     path: "/news",
