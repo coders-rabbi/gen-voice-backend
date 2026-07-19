@@ -6,9 +6,10 @@ import handleZodError from "../error/handleZodError";
 import handleMongooseValidationError from "../error/mongoosValidationError";
 import handleCastError from "../error/handleCastError";
 import handleDuplicateError from "../error/handleDuplicateError";
+import { StatusCodes } from "http-status-codes";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
+  let statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
   let message = err.message || "Something went wrong!";
 
   let errorSource: TErrorSource = [

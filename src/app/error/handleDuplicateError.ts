@@ -1,3 +1,5 @@
+import { StatusCodes } from "http-status-codes";
+
 const handleDuplicateError = (err: any) => {
   const match = err.message.match(/\{\s*([^:]+):\s*"?([^"}]+)"?\s*\}/);
   const field = match?.[1] || "field";
@@ -11,7 +13,7 @@ const handleDuplicateError = (err: any) => {
   ];
 
   return {
-    statusCode: 400,
+    statusCode: StatusCodes.CONFLICT,
     message: "Duplicate key error",
     errorSource,
   };

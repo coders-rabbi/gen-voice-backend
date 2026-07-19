@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { TErrorSource, TGenericResponseError } from "../interface/error";
+import { StatusCodes } from "http-status-codes";
 
 const handleCastError = (
   err: mongoose.Error.CastError,
@@ -12,7 +13,7 @@ const handleCastError = (
   ];
 
   return {
-    statusCode: 400,
+    statusCode: StatusCodes.BAD_REQUEST,
     message: "Something is given Invalid",
     errorSource,
   };

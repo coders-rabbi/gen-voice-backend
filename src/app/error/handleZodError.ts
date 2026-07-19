@@ -1,5 +1,6 @@
 import { ZodError, ZodIssue } from "zod";
 import { TGenericResponseError } from "../interface/error";
+import { StatusCodes } from "http-status-codes";
 
 const handleZodError = (err: ZodError): TGenericResponseError => {
   const errorSource = err.issues.map((issue: ZodIssue) => {
@@ -9,7 +10,7 @@ const handleZodError = (err: ZodError): TGenericResponseError => {
     };
   });
   return {
-    statusCode: 400,
+    statusCode: StatusCodes.BAD_REQUEST,
     message: "Validation error",
     errorSource,
   };
