@@ -7,7 +7,7 @@ export type TNewsStatus =
   | "published"
   | "archived";
 
-export type Tnews = {
+export type TNews = {
   newsId: string;
   reporterId: Types.ObjectId;
   approvedBy: Types.ObjectId;

@@ -1,7 +1,7 @@
-import { Tnews } from "./news.interface";
+import { TNews } from "./news.interface";
 import { News } from "./news.model";
 
-const createNewsIntoDB = async (newsData: Tnews) => {
+const createNewsIntoDB = async (newsData: TNews) => {
   const result = await News.create(newsData);
   return result;
 };
@@ -16,8 +16,18 @@ const getSingleNewsFromDB = async (id: string) => {
   return result;
 };
 
+const updateNewsIntoDB = async (id: string, payload: Partial<TNews>) => {
+  const result = await News.findOneAndUpdate(
+    { newsId: id },
+    { $set: payload },
+    { returnDocument: "after" },
+  );
+  return result;
+};
+
 export const NewsServices = {
   createNewsIntoDB,
   getAllNewsFromDB,
   getSingleNewsFromDB,
+  updateNewsIntoDB,
 };

@@ -38,8 +38,25 @@ const getSingleNewsController = catchAsync(
   },
 );
 
+const updateNewsController = catchAsync(async (req, res, next) => {
+  const { newsId } = req.params;
+  const payload = req.body;
+
+  console.log(newsId, payload);
+
+  const result = await NewsServices.updateNewsIntoDB(newsId as string, payload);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "News update successfully",
+    data: result,
+  });
+});
+
 export const NewsControllers = {
   createNewsController,
   getAllNewsController,
   getSingleNewsController,
+  updateNewsController,
 };

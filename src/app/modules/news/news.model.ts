@@ -1,7 +1,7 @@
 import { Schema, model, models } from "mongoose";
-import { Tnews } from "./news.interface"; // তোমার ইন্টারফেস ফাইলটির সঠিক পাথ দিও
+import { TNews } from "./news.interface"; // তোমার ইন্টারফেস ফাইলটির সঠিক পাথ দিও
 
-const newsSchema = new Schema<Tnews>(
+const newsSchema = new Schema<TNews>(
   {
     newsId: {
       type: String,
@@ -101,4 +101,4 @@ const newsSchema = new Schema<Tnews>(
   },
 );
 
-export const News = model<Tnews>("News", newsSchema);
+export const News = model<TNews>("News", newsSchema);

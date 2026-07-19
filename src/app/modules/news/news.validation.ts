@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createNewsValidationSchema = z.object({
+const createNewsValidationSchema = z.object({
   body: z.object({
     newsId: z.string().trim().min(1, "News ID is required"),
 
