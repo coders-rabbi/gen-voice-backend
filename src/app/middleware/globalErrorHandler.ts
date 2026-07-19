@@ -7,10 +7,11 @@ import handleMongooseValidationError from "../error/mongoosValidationError";
 import handleCastError from "../error/handleCastError";
 import handleDuplicateError from "../error/handleDuplicateError";
 import { StatusCodes } from "http-status-codes";
+import AppError from "../error/AppError";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  let statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
-  let message = err.message || "Something went wrong!";
+  let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+  let message = "Something went wrong!";
 
   let errorSource: TErrorSource = [
     {
@@ -39,6 +40,23 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSource = simplifiedError.errorSource;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err?.message;
+    errorSource = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err?.message;
+    errorSource = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
   }
 
   res.status(statusCode).json({
