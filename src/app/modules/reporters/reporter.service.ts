@@ -47,7 +47,7 @@ const updateSingleReporterInfoFromDB = async (
     { id },
     { $set: updatedReporterData },
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   );

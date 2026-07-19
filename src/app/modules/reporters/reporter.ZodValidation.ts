@@ -35,9 +35,59 @@ export const ReporterValidationSchema = z.object({
     designation: z.string().trim().min(4, "Designation is required"),
 
     facebook: z.url("Facebook URL is invalid").optional(),
-
-    isActive: z.enum(["active", "blocked"]).optional(),
   }),
 });
 
-export type TReporterValidation = z.infer<typeof ReporterValidationSchema>;
+export const updateReporterValidationSchema = z.object({
+  body: z.object({
+    id: z.string().trim().min(1, "Reporter ID is required").optional(),
+
+    name: ReporterNameValidationSchema.partial().optional(),
+
+    gender: z
+      .enum(["male", "female", "others"], {
+        error: "Gender must be either 'male', 'female' or 'others' ",
+      })
+      .optional(),
+
+    dateOfBirth: z.coerce.date().optional(),
+
+    email: z.string().email("Invalid email address").trim().optional(),
+
+    bloodGroup: z
+      .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+      .optional(),
+
+    contactNo: z
+      .string()
+      .trim()
+      .min(11, "Contact number must be at least 11 digits")
+      .optional(),
+
+    presentAddress: z
+      .string()
+      .trim()
+      .min(5, "Present address is required")
+      .optional(),
+
+    permanentAddress: z
+      .string()
+      .trim()
+      .min(5, "Permanent address is required")
+      .optional(),
+
+    profileImage: z
+      .string()
+      .url("Profile image must be a valid URL")
+      .optional(),
+
+    designation: z.string().trim().min(4, "Designation is required").optional(),
+
+    facebook: z.string().url("Facebook URL is invalid").optional(),
+  }),
+});
+
+export const reporterValidations = {
+  ReporterValidationSchema,
+  updateReporterValidationSchema,
+};

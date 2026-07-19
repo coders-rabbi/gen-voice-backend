@@ -86,6 +86,11 @@ const newsSchema = new Schema<Tnews>(
       },
       default: "draft",
     },
+    isDeleted: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     publishAt: {
       type: Date,
       default: null,

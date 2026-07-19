@@ -25,6 +25,7 @@ export type Tnews = {
   source?: string;
   sourceUrl?: string;
   status: TNewsStatus;
+  isDeleted: Boolean;
   publishAt?: Date;
   createdAt: Date;
   updatedAt: Date;
