@@ -1,3 +1,5 @@
+import { StatusCodes } from "http-status-codes";
+import AppError from "../../error/AppError";
 import { TNews } from "./news.interface";
 import { News } from "./news.model";
 
@@ -17,6 +19,11 @@ const getSingleNewsFromDB = async (id: string) => {
 };
 
 const updateNewsIntoDB = async (id: string, payload: Partial<TNews>) => {
+  const isNewsExist = await News.findOne({ newsId: id });
+  if (!isNewsExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, "News is not found");
+  }
+
   const result = await News.findOneAndUpdate(
     { newsId: id },
     { $set: payload },
