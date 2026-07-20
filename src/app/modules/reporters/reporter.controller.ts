@@ -17,7 +17,7 @@ const createReporterController = catchAsync(async (req, res, next) => {
 
 const getAllReporterController = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await ReporterServices.getAllReporterFromDB();
+    const result = await ReporterServices.getAllReporterFromDB(req.query);
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
