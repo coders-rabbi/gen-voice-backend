@@ -16,7 +16,7 @@ const createNewsController = catchAsync(async (req, res) => {
 });
 
 const getAllNewsController = catchAsync(async (req, res, next) => {
-  const result = await NewsServices.getAllNewsFromDB();
+  const result = await NewsServices.getAllNewsFromDB(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

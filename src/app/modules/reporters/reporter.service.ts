@@ -14,7 +14,6 @@ const createReporterIntoDB = async (reporter: TReporter) => {
 
 const getAllReporterFromDB = async (query: Record<string, unknown>) => {
   const queryObj = { ...query };
-  console.log(query);
   let searchTerm = "";
   if (query?.searchTerm) {
     searchTerm = query.searchTerm as string;
