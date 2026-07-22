@@ -1,12 +1,19 @@
 import { Model } from "mongoose";
 
-// user.interface.ts
+export type TUserRole =
+  | "super_admin"
+  | "admin"
+  | "editor"
+  | "reporter"
+  | "user";
+
 export type TUser = {
   email: string;
   password: string;
-  role: string;
+  role: TUserRole;
   isDeleted: boolean;
   isActive?: "active" | "blocked";
+  comparePassword(candidate: string): Promise<boolean>;
 };
 
 export interface UserModel extends Model<TUser> {

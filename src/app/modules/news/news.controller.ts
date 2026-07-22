@@ -28,7 +28,7 @@ const getAllNewsController = catchAsync(async (req, res, next) => {
 const getSingleNewsController = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    console.log(id);
+
     const result = await NewsServices.getSingleNewsFromDB(id as string);
     res.status(200).json({
       success: true,

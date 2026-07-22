@@ -3,6 +3,7 @@ import { TReporter } from "./reporter.interface";
 import { Reporter } from "./reporter.model";
 import AppError from "../../error/AppError";
 import { StatusCodes } from "http-status-codes";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createReporterIntoDB = async (reporter: TReporter) => {
   if (await Reporter.isReporterExists(reporter.id)) {
@@ -13,56 +14,17 @@ const createReporterIntoDB = async (reporter: TReporter) => {
 };
 
 const getAllReporterFromDB = async (query: Record<string, unknown>) => {
-  const queryObj = { ...query };
-  let searchTerm = "";
-  if (query?.searchTerm) {
-    searchTerm = query.searchTerm as string;
-  }
+  const searchAbleFields = ["email", "name.firstName", "presentAddress"];
 
-  const searchQuery = Reporter.find({
-    $or: ["email", "name.firstName", "presentAddress"].map((field) => ({
-      [field]: { $regex: searchTerm, $options: "i" },
-    })),
-  });
+  const reporterQuery = new QueryBuilder(Reporter.find(), query)
+    .search(searchAbleFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  //fintering
-  const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
-  excludeFields.forEach((el) => delete queryObj[el]);
-
-  const filterQuery = searchQuery.find(queryObj);
-
-  let sort = "createdAt";
-  if (query.sort) {
-    sort = query.sort as string;
-  }
-
-  const sortQuery = filterQuery.sort(sort);
-
-  let page = 1;
-  let limit = 1;
-  let skip = 0;
-
-  if (query.limit) {
-    limit = Number(query.limit);
-  }
-
-  if (query.page) {
-    page = Number(query.page);
-    skip = (page - 1) * limit;
-  }
-
-  const paginateQuery = sortQuery.skip(skip);
-
-  const limitQuery = paginateQuery.limit(limit);
-
-  let fields = "-__v";
-  if (query.fields) {
-    fields = (query.fields as string).split(",").join(" ");
-  }
-
-  const filedsQuery = await limitQuery.select(fields);
-
-  return filedsQuery;
+  const result = await reporterQuery.modelQuery;
+  return result;
 };
 
 const getSingleReporterUsingReporterId = async (reporterId: string) => {

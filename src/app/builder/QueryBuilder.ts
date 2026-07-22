@@ -1,5 +1,4 @@
 import { Query } from "mongoose";
-import { resourceLimits } from "worker_threads";
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
