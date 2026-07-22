@@ -3,6 +3,8 @@ import AppError from "../../error/AppError";
 import { User } from "../users/user.model";
 import { TLoginUser } from "./auth.interface";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import config from "../../config";
 
 const loginUser = async (payload: TLoginUser) => {
   const isUserExist = await User.findOne({ email: payload?.email }).select(
@@ -31,7 +33,16 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(StatusCodes.FORBIDDEN, "This password is not matched");
   }
 
-  console.log(isPasswordMatch);
+  const jwtPayload = {
+    userId: isUserExist?.email,
+    role: isUserExist?.role,
+  };
+
+  const accessToken = jwt.sign(jwtPayload, config.jwt_access_token as string, {
+    expiresIn: "10d",
+  });
+
+  return { accessToken };
 };
 
 export const AuthService = {
