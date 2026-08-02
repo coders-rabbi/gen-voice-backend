@@ -2,14 +2,9 @@ import { model, Query, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import { TUser, UserModel } from "./user.interface";
 import config from "../../config";
+import { USER_ROLE } from "./user.constant";
 
-export const USER_ROLE = {
-  SUPER_ADMIN: "super_admin",
-  ADMIN: "admin",
-  EDITOR: "editor",
-  REPORTER: "reporter",
-  USER: "user",
-} as const;
+
 
 const UserSchema = new Schema<TUser, UserModel>(
   {

@@ -4,13 +4,27 @@ import sendResponse from "../../utils/sendreponse";
 import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 
-const createUserController = catchAsync(async (req, res) => {
+const createReporterController = catchAsync(async (req, res) => {
   const { userData, reporterData } = req.body;
-  const result = await UserServices.createUserIntoDB(userData, reporterData);
+  const result = await UserServices.createReporterIntoDB(
+    userData,
+    reporterData,
+  );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "User create successfull",
+    message: "Reporter create successfull",
+    data: result,
+  });
+});
+
+const createEditorController = catchAsync(async (req, res) => {
+  const { userData, editorData } = req.body;
+  const result = await UserServices.createEditorIntoDB(userData, editorData);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Editor create successfull",
     data: result,
   });
 });
@@ -64,7 +78,8 @@ const deleteUserController = catchAsync(async (req, res) => {
 });
 
 export const UserController = {
-  createUserController,
+  createReporterController,
+  createEditorController,
   deleteUserController,
   getAllUserController,
   getSingleUserController,

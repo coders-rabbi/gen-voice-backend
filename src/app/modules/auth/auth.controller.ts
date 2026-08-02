@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendreponse";
 import { AuthService } from "./auth.service";
 
 const loginUserController = catchAsync(async (req, res) => {
+  
   const result = await AuthService.loginUser(req.body);
   sendResponse(res, {
     success: true,

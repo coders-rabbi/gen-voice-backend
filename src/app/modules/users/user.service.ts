@@ -43,6 +43,11 @@ const createReporterIntoDB = async (
   }
 };
 
+
+const createEditorIntoDB = async(userData: TUser, editorData: TReporter) => {
+
+}
+
 const getAllUsersFromDB = async () => {
   const result = await User.find();
   return result;
@@ -77,7 +82,8 @@ const deleteUserFromDB = async (id: string) => {
 };
 
 export const UserServices = {
-  createUserIntoDB: createReporterIntoDB,
+  createReporterIntoDB,
+  createEditorIntoDB,
   deleteUserFromDB,
   getAllUsersFromDB,
   getSingleUserFromDB,

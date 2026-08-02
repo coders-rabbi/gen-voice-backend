@@ -1,13 +1,13 @@
-import { model, Schema } from "mongoose";
-import { TReporterName, TReporter, ReporterModel } from "./reporter.interface";
+import { Schema } from "mongoose";
+import { TEditor, TEditorName } from "./editor.inderface";
 
-const ReporterNameSchema = new Schema<TReporterName>({
+const EditorNameSchema = new Schema<TEditorName>({
   firstName: { type: String, required: true, trim: true },
   middleName: { type: String, trim: true },
   lastName: { type: String, required: true, trim: true },
 });
 
-const ReporterSchema = new Schema<TReporter, ReporterModel>(
+const EditorSchema = new Schema<TEditor>(
   {
     id: {
       type: String,
@@ -21,7 +21,7 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
       ref: "User",
     },
     name: {
-      type: ReporterNameSchema,
+      type: EditorNameSchema,
       required: true,
     },
     gender: {
@@ -72,24 +72,4 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
   },
 );
 
-// custom static methods
-ReporterSchema.statics.isReporterExists = async function (id: string) {
-  const ExistingReport = await Reporter.findOne({ id });
-  return ExistingReport;
-};
 
-// fullName virtual
-ReporterSchema.virtual("fullName").get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-});
-
-ReporterSchema.virtual("news", {
-  ref: "News",
-  localField: "_id",
-  foreignField: "reporterId",
-});
-
-export const Reporter = model<TReporter, ReporterModel>(
-  "Reporter",
-  ReporterSchema,
-);

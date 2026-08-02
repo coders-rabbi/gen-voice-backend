@@ -1,11 +1,7 @@
 import { Model } from "mongoose";
+import { USER_ROLE } from "./user.constant";
 
-export type TUserRole =
-  | "super_admin"
-  | "admin"
-  | "editor"
-  | "reporter"
-  | "user";
+export type TUserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 
 export type TUser = {
   email: string;

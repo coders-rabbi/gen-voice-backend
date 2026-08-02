@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 
 const createNewsController = catchAsync(async (req, res) => {
+  console.log(req.user);
   const newsData = req.body;
   const result = await NewsServices.createNewsIntoDB(newsData);
   sendResponse(res, {
@@ -16,6 +17,7 @@ const createNewsController = catchAsync(async (req, res) => {
 });
 
 const getAllNewsController = catchAsync(async (req, res, next) => {
+  console.log(req.user);
   const result = await NewsServices.getAllNewsFromDB(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
