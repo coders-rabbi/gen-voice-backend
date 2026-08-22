@@ -1,11 +1,10 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import { ReporterRoutes } from "./app/modules/reporters/reporter.route";
-import { UserRouters } from "./app/modules/users/user.route";
-import { NewsRouter } from "./app/modules/news/news.route";
+import mongoose from "mongoose";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notfound";
 import router from "./app/routes";
+import config from "./app/config";
 
 export const app: Application = express();
 export const port = 3000;
@@ -14,11 +13,49 @@ export const port = 3000;
 app.use(express.json());
 app.use(cors());
 
+// ---- DB connect middleware (router register হওয়ার আগে) ----
+let cached = (global as any).mongoose;
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
+}
+
+async function connectDB() {
+  if (cached.conn) return cached.conn;
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(config.database_url as string)
+      .then((m) => {
+        console.log("MongoDB connected");
+        return m;
+      })
+      .catch((err) => {
+        cached.promise = null;
+        console.log("MongoDB connection error:", err);
+        throw err;
+      });
+  }
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
+
+app.use(async (req: Request, res: Response, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+    });
+  }
+});
+// ---------------------------------------------------------------
+
 app.use("/api/v1", router);
 app.get("/", (req: Request, res: Response) => {
   res.send("Gen Voice Server is running...");
 });
 
-//moddleWare
+//middleware
 app.use(globalErrorHandler);
 app.use(notFound);
