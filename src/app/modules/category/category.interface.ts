@@ -1,7 +1,7 @@
 export type TCategory = {
   categoryName: string;
   slug: string;
-  image: string;
+  // image: string;
   description: string;
   isDeleted: boolean;
   createdAt: Date;

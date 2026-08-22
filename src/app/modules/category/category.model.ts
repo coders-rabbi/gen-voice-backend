@@ -17,10 +17,10 @@ const CategorySchema = new Schema<TCategory>(
       required: true,
       trim: true,
     },
-    image: {
-      type: String,
-      required: true,
-    },
+    // image: {
+    //   type: String,
+    //   required: true,
+    // },
     description: {
       type: String,
       required: true,

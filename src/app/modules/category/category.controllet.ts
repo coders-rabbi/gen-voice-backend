@@ -16,7 +16,12 @@ const createCategoryController = catchAsync(async (req, res) => {
 
 const getAllCategoryController = catchAsync(async (req, res) => {
   const result = await CategoriesServic.getAllCategoriesFromDB(req.query);
-  return result;
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Categories retrieved successfully",
+    data: result,
+  });
 });
 
 export const CategoriesController = {

@@ -10,7 +10,7 @@ const createCategoryValidationSchema = z.object({
       .string({ error: "Slug is required" })
       .trim()
       .min(1, "Slug cannot be empty"),
-    image: z.string({ error: "Image is required" }),
+    // image: z.string({ error: "Image is required" }),
     description: z
       .string({ error: "Description is required" })
       .trim()
