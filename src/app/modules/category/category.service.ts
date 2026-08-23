@@ -21,7 +21,43 @@ const getAllCategoriesFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
+const updateSingleCategoryIntoDB = async (
+  id: string,
+  payload: Partial<TCategory>,
+) => {
+  const result = await Category.findByIdAndUpdate(
+    id,
+    { $set: payload },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  if (!result) {
+    throw new Error("Category not found"); // চাইলে AppError দিয়ে প্রপার error handling করুন
+  }
+
+  return result;
+};
+
+const deleteSingleCategoryFromBD = async (id: string) => {
+  const result = await Category.findByIdAndUpdate(
+    id,
+    { $set: { isDeleted: true } },
+    { returnDocument: "after" },
+  );
+
+  if (!result) {
+    throw new Error("Category not found");
+  }
+
+  return result;
+};
+
 export const CategoriesServic = {
   createCategoryIntoDB,
   getAllCategoriesFromDB,
+  updateSingleCategoryIntoDB,
+  deleteSingleCategoryFromBD,
 };

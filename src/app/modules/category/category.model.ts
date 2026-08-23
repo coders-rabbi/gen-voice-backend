@@ -26,6 +26,10 @@ const CategorySchema = new Schema<TCategory>(
       required: true,
       trim: true,
     },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -37,7 +41,7 @@ const CategorySchema = new Schema<TCategory>(
   },
 );
 
-CategorySchema.pre("save", async function (next) {
+CategorySchema.pre("save", async function () {
   const category = this;
   const existingCategory = await Category.findOne({
     categoryName: category.categoryName,
@@ -49,6 +53,10 @@ CategorySchema.pre("save", async function (next) {
       "Category with this name already exists!",
     );
   }
+});
+
+CategorySchema.pre("find", function () {
+  this.find({ isDeleted: { $ne: true } });
 });
 
 export const Category = model<TCategory>("Categoris", CategorySchema);

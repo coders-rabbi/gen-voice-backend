@@ -42,7 +42,7 @@ const getSingleReporterUsingReportIdController = catchAsync(
   },
 );
 
-const updateSingleReporterController = catchAsync(async (req, res, next) => {
+const updateSingleReporterController = catchAsync(async (req, res) => {
   const { reporterId } = req.params;
   const updatedData = req.body;
   const result = await ReporterServices.updateSingleReporterInfoFromDB(

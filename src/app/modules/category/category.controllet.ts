@@ -24,7 +24,37 @@ const getAllCategoryController = catchAsync(async (req, res) => {
   });
 });
 
+const updateSingleCategoryController = catchAsync(async (req, res) => {
+  const { categoryId } = req.params;
+  const updateData = req.body;
+  const result = await CategoriesServic.updateSingleCategoryIntoDB(
+    categoryId as string,
+    updateData,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Categories update successfully",
+    data: result,
+  });
+});
+
+const deleteCategoryController = catchAsync(async (req, res) => {
+  const { categoryId } = req.params;
+  const result = await CategoriesServic.deleteSingleCategoryFromBD(
+    categoryId as string,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Cagetory successfully deleted!",
+    data: result,
+  });
+});
+
 export const CategoriesController = {
   createCategoryController,
   getAllCategoryController,
+  updateSingleCategoryController,
+  deleteCategoryController,
 };

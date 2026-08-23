@@ -10,5 +10,14 @@ router.post(
   CategoriesController.createCategoryController,
 );
 router.get("/", CategoriesController.getAllCategoryController);
+router.patch(
+  "/update_category/:categoryId",
+  validateRequest(CategoryValidation.updateCategoryValidationSchema),
+  CategoriesController.updateSingleCategoryController,
+);
+router.patch(
+  "/delete_category/:categoryId",
+  CategoriesController.deleteCategoryController,
+);
 
 export const CategoriesRouter = router;
