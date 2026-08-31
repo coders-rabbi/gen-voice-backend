@@ -63,6 +63,11 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
     facebook: {
       type: String,
     },
+    isActive: {
+      type: String,
+      enum: ["active", "blocked", "suspended", "pending", "rejected"],
+      default: "pending",
+    },
   },
   {
     timestamps: true,

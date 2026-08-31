@@ -17,6 +17,7 @@ const UserSchema = new Schema<TUser, UserModel>(
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
     },
     password: { type: String, required: true, select: false },
+    passwordChangeAt: {type: Date},
     role: {
       type: String,
       enum: Object.values(USER_ROLE),
@@ -50,10 +51,6 @@ UserSchema.pre("save", async function () {
   );
 });
 
-// soft-delete filter on all find queries
-// UserSchema.pre(/^find/, function (this: Query<any, TUser>) {
-//   this.find({ isDeleted: { $ne: true } });
-// });
 
 // soft-delete filter on aggregate pipelines
 UserSchema.pre("aggregate", function () {
@@ -68,6 +65,16 @@ UserSchema.methods.comparePassword = async function (candidate: string) {
 // static method
 UserSchema.statics.isUserExisting = async function (id: string) {
   return this.findById(id);
+};
+
+UserSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangeTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangeTime = Math.floor(
+    new Date(passwordChangeTimestamp).getTime() / 1000,
+  );
+  return passwordChangeTime > jwtIssuedTimestamp;
 };
 
 export const User = model<TUser, UserModel>("User", UserSchema);

@@ -25,16 +25,16 @@ const createReporterIntoDB = async (
     }
 
     reporterData.user = createdUser._id;
-    const newStudent = await Reporter.create([reporterData], { session });
+    const newReporter = await Reporter.create([reporterData], { session });
 
-    if (!newStudent.length) {
+    if (!newReporter.length) {
       throw new AppError(StatusCodes.BAD_REQUEST, "Reporter create to fail");
     }
 
     await session.commitTransaction();
     await session.endSession();
 
-    return newStudent;
+    return newReporter;
   } catch (err) {
     await session.abortTransaction();
     throw err;
@@ -43,10 +43,10 @@ const createReporterIntoDB = async (
   }
 };
 
-
-const createEditorIntoDB = async(userData: TUser, editorData: TReporter) => {
-
-}
+const createUserBySuperAdminIntoDB = async (userData: TUser) => {
+  const result = await User.create(userData);
+  return result;
+};
 
 const getAllUsersFromDB = async () => {
   const result = await User.find();
@@ -83,7 +83,7 @@ const deleteUserFromDB = async (id: string) => {
 
 export const UserServices = {
   createReporterIntoDB,
-  createEditorIntoDB,
+  createUserBySuperAdminIntoDB,
   deleteUserFromDB,
   getAllUsersFromDB,
   getSingleUserFromDB,

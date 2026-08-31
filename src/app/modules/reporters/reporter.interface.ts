@@ -19,6 +19,7 @@ export type TReporter = {
   profileImage?: string;
   designation: string;
   facebook?: string;
+  isActive?: "active" | "blocked" | "suspended" | "pending" | "rejected";
   createdAt?: Date;
   updatedAt?: Date;
 };

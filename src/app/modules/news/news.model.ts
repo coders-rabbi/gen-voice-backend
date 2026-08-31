@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model } from "mongoose";
 import { TNews } from "./news.interface"; // তোমার ইন্টারফেস ফাইলটির সঠিক পাথ দিও
 
 const newsSchema = new Schema<TNews>(
@@ -11,8 +11,8 @@ const newsSchema = new Schema<TNews>(
     },
     reporterId: {
       type: Schema.Types.ObjectId,
-      ref: "Reporter",
       required: [true, "Reporter ID is required"],
+      ref: "Reporter",
     },
     approvedBy: {
       type: Schema.Types.ObjectId,
@@ -21,8 +21,8 @@ const newsSchema = new Schema<TNews>(
     },
     categoryId: {
       type: Schema.Types.ObjectId,
-      ref: "Category",
       required: [true, "Category ID is required"],
+      ref: "Category",
     },
     title: {
       type: String,
@@ -44,6 +44,11 @@ const newsSchema = new Schema<TNews>(
     content: {
       type: String,
       required: [true, "Content is required"],
+    },
+    contentType: {
+      type: String,
+      enum: ["Text", "Video", "Image", "Mixed"],
+      required: [true, "Content type is required"],
     },
     featuredImageUrl: {
       type: String,
@@ -81,10 +86,22 @@ const newsSchema = new Schema<TNews>(
     status: {
       type: String,
       enum: {
-        values: ["draft", "pending", "approved", "published", "archived"],
+        values: [
+          "draft",
+          "pending",
+          "published",
+          "archived",
+          "rejected",
+          "blocked",
+        ],
         message: "{VALUE} is not a valid status",
       },
       default: "draft",
+    },
+    isAnonymous: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     isDeleted: {
       type: Boolean,
@@ -93,7 +110,7 @@ const newsSchema = new Schema<TNews>(
     },
     publishAt: {
       type: Date,
-      default: null,
+      default: Date.now,
     },
   },
   {

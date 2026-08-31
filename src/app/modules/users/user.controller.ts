@@ -18,9 +18,9 @@ const createReporterController = catchAsync(async (req, res) => {
   });
 });
 
-const createEditorController = catchAsync(async (req, res) => {
-  const { userData, editorData } = req.body;
-  const result = await UserServices.createEditorIntoDB(userData, editorData);
+const createUserBySuperAdminController = catchAsync(async (req, res) => {
+  const { userData } = req.body;
+  const result = await UserServices.createUserBySuperAdminIntoDB(userData);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -53,7 +53,6 @@ const getSingleUserController = catchAsync(async (req, res) => {
 const updatePasswordController = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
-  console.log(id, password);
   const result = await UserServices.updateSingleUserFromBD(
     id as string,
     password,
@@ -79,7 +78,7 @@ const deleteUserController = catchAsync(async (req, res) => {
 
 export const UserController = {
   createReporterController,
-  createEditorController,
+  createUserBySuperAdminController,
   deleteUserController,
   getAllUserController,
   getSingleUserController,

@@ -5,13 +5,29 @@ import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notfound";
 import router from "./app/routes";
 import config from "./app/config";
+import cookieParser from "cookie-parser";
 
 export const app: Application = express();
 export const port = 3000;
 
 //parser
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
+const allowedOrigins = ["http://localhost:3000", "https://www.genvoice.news"];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  }),
+);
 
 // ---- DB connect middleware (router register হওয়ার আগে) ----
 let cached = (global as any).mongoose;

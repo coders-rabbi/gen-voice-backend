@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { TCategory } from "./category.interface";
-import { timeStamp } from "console";
 import AppError from "../../error/AppError";
 import { StatusCodes } from "http-status-codes";
 
@@ -42,11 +41,11 @@ const CategorySchema = new Schema<TCategory>(
 );
 
 CategorySchema.pre("save", async function () {
-  const category = this;
-  const existingCategory = await Category.findOne({
-    categoryName: category.categoryName,
-  });
+  if (!this.isNew) return; // শুধু নতুন document এর জন্য check করবে
 
+  const existingCategory = await Category.findOne({
+    categoryName: this.categoryName,
+  });
   if (existingCategory) {
     throw new AppError(
       StatusCodes.CONFLICT,
@@ -59,4 +58,4 @@ CategorySchema.pre("find", function () {
   this.find({ isDeleted: { $ne: true } });
 });
 
-export const Category = model<TCategory>("Categoris", CategorySchema);
+export const Category = model<TCategory>("Category", CategorySchema);

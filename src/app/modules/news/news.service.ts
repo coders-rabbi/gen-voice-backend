@@ -1,0 +1,279 @@
+import { StatusCodes } from "http-status-codes";
+import AppError from "../../error/AppError";
+import { TNews } from "./news.interface";
+import { News } from "./news.model";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { Category } from "../category/category.model";
+import { Reporter } from "../reporters/reporter.model";
+
+const createNewsIntoDB = async (
+  newsData: TNews,
+  authenticatedUserId: string,
+) => {
+  if (!newsData.categoryId) {
+    throw new Error("categoryId is required");
+  }
+
+  const category = await Category.findById(newsData.categoryId).select(
+    "categoryName",
+  );
+
+  if (!category) {
+    throw new Error("Invalid category");
+  }
+
+  const lastNews = await News.findOne()
+    .sort({ createdAt: -1 })
+    .select("newsId");
+  const newYear = new Date().getFullYear();
+
+  const lastDigitForNewsID = lastNews?.newsId?.slice(-5) || "00000";
+  const increaseAbleNewsId = String(Number(lastDigitForNewsID) + 1).padStart(
+    5,
+    "0",
+  );
+
+  const newData = {
+    ...newsData,
+    newsId: `news-${category.categoryName}-${newYear}-${increaseAbleNewsId}`,
+  };
+
+  try {
+    const result = await News.create(newData);
+    return result;
+  } catch (err: any) {
+    if (err?.code === 11000) {
+      const field = Object.keys(err.keyPattern || {})[0] || "field";
+      throw new Error(`A news item with this ${field} already exists`);
+    }
+    throw err;
+  }
+};
+
+const getAllNewsFromDB = async (query: Record<string, unknown>) => {
+  const searchAbleFiends = [
+    "title",
+    "shortDetails",
+    "content",
+    "location",
+    "tags",
+  ];
+  const newsQuery = new QueryBuilder(
+    News.find({ contentType: { $eq: "Text" } }).populate([
+      {
+        path: "reporterId",
+        select: "name id",
+      },
+      {
+        path: "approvedBy",
+        select: "role email",
+      },
+      {
+        path: "categoryId",
+        select: "categoryName",
+      },
+    ]),
+    query,
+  )
+    .search(searchAbleFiends)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await newsQuery.modelQuery;
+
+  return result;
+};
+
+const getAllVideoNewsFromDB = async (query: Record<string, unknown>) => {
+  const searchAbleFiends = [
+    "title",
+    "shortDetails",
+    "content",
+    "location",
+    "tags",
+  ];
+  const newsQuery = new QueryBuilder(
+    News.find({ contentType: { $eq: "Video" } }).populate([
+      {
+        path: "reporterId",
+        select: "name email profileImage",
+      },
+      {
+        path: "approvedBy",
+        select: "role email",
+      },
+      {
+        path: "categoryId",
+        select: "categoryName",
+      },
+    ]),
+    query,
+  )
+    .search(searchAbleFiends)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await newsQuery.modelQuery;
+
+  return result;
+};
+
+const getSingleReporterNewsFromDB = async (
+  userId: string,
+  query: Record<string, unknown>,
+) => {
+  const reporter = await Reporter.findOne({ user: userId }).select("_id");
+  if (!reporter) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Reporter not found");
+  }
+  const repId = reporter._id;
+  console.log(repId);
+  const searchAbleFiends = [
+    "title",
+    "shortDetails",
+    "content",
+    "location",
+    "tags",
+  ];
+
+  const newsQuery = new QueryBuilder(
+    News.find({ reporterId: repId }).populate([
+      {
+        path: "reporterId",
+        select: "name email profileImage",
+      },
+      {
+        path: "approvedBy",
+        select: "role email",
+      },
+      {
+        path: "categoryId",
+        select: "categoryName",
+      },
+    ]),
+    query,
+  )
+    .search(searchAbleFiends)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await newsQuery.modelQuery;
+
+  return result;
+};
+
+const getSingleNewsFromDB = async (id: string) => {
+  const result = await News.findById(id); // ✅ সঠিক
+  return result;
+};
+
+const getHomePageNewsFromDB = async () => {
+  const categories = [
+    "Sports",
+    "Politics",
+    "Business",
+    "Technology",
+    "Music",
+    "Entertaiment",
+  ];
+
+  const LIMIT_PER_CATEGORY = 6;
+
+  const pipeline = [
+    {
+      $match: {
+        status: "published",
+        isDeleted: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "categoryId",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    { $unwind: "$category" },
+    {
+      $facet: categories.reduce(
+        (acc, catName) => {
+          acc[catName] = [
+            { $match: { "category.categoryName": catName } },
+            { $sort: { publishAt: -1 } },
+            { $limit: LIMIT_PER_CATEGORY },
+            {
+              $project: {
+                title: 1,
+                shortDetails: 1,
+                featuredImageUrl: 1,
+                slug: 1,
+                publishAt: 1,
+                reporterId: 1,
+              },
+            },
+          ];
+          return acc;
+        },
+        {} as Record<string, any[]>,
+      ),
+    },
+  ];
+
+  const result = await News.aggregate(pipeline);
+  return result[0];
+};
+
+const updateNewsIntoDB = async (id: string, payload: Partial<TNews>) => {
+  const isNewsExist = await News.findOne({ newsId: id });
+  if (!isNewsExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, "News is not found");
+  }
+
+  const result = await News.findOneAndUpdate(
+    { newsId: id },
+    { $set: payload },
+    { returnDocument: "after" },
+  );
+  return result;
+};
+
+const updateNewsStatus = async (id: string, payload: Partial<TNews>) => {
+  const updateData: Partial<TNews> = {};
+
+  if (payload?.status) {
+    updateData.status = payload.status;
+  }
+
+  if (payload?.approvedBy) {
+    updateData.approvedBy = payload.approvedBy;
+  }
+
+  const result = await News.findByIdAndUpdate(id, updateData, {
+    returnDocument: "after",
+    runValidators: true,
+  });
+
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, "News not found");
+  }
+
+  return result;
+};
+
+export const NewsServices = {
+  createNewsIntoDB,
+  getAllNewsFromDB,
+  getAllVideoNewsFromDB,
+  getSingleReporterNewsFromDB,
+  getHomePageNewsFromDB,
+  getSingleNewsFromDB,
+  updateNewsStatus,
+  updateNewsIntoDB,
+};

@@ -6,6 +6,7 @@ export type TUserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 export type TUser = {
   email: string;
   password: string;
+  passwordChangeAt?: Date;
   role: TUserRole;
   isDeleted: boolean;
   isActive?: "active" | "blocked";
@@ -14,4 +15,8 @@ export type TUser = {
 
 export interface UserModel extends Model<TUser> {
   isUserExisting(id: string): Promise<TUser | null>;
+  isJWTIssuedBeforePasswordChanged(
+    passwordChangeTimestamp: Date,
+    jwtIssuedTimestamp: number,
+  ): boolean;
 }

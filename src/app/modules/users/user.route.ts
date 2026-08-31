@@ -3,7 +3,10 @@ import { UserController } from "./user.controller";
 const router = express.Router();
 
 router.post("/create_reporter", UserController.createReporterController);
-router.post("/create_editor", UserController.createEditorController);
+router.post(
+  "/create_user-by-superadmin",
+  UserController.createUserBySuperAdminController,
+);
 // router.post("/create_admin", UserController.createUserController);
 // router.post("/create_super_admin", UserController.createUserController);
 // router.post("/create_user", UserController.createUserController);

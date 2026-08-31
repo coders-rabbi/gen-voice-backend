@@ -2,11 +2,9 @@ import { z } from "zod";
 
 const createNewsValidationSchema = z.object({
   body: z.object({
-    newsId: z.string().trim().min(1, "News ID is required"),
-
     reporterId: z.string().trim().min(1, "Reporter ID is required"),
 
-    approvedBy: z.string().trim().optional().nullable(),
+    approvedBy: z.string().trim().optional().optional(),
 
     categoryId: z.string().trim().min(1, "Category ID is required"),
 
@@ -21,6 +19,8 @@ const createNewsValidationSchema = z.object({
     shortDetails: z.string().trim().min(1, "Short details are required"),
 
     content: z.string().min(1, "Content is required"),
+
+    contentType: z.enum(["Text", "Video", "Image", "Mixed"]),
 
     featuredImageUrl: z.string().url("Featured image must be a valid URL"),
 
@@ -54,6 +54,7 @@ const createNewsValidationSchema = z.object({
       .enum(["draft", "pending", "approved", "published", "archived"])
       .optional(),
 
+    isAnonymous: z.boolean().optional(),
     isDeleted: z.boolean().optional(),
 
     publishAt: z.string().datetime().optional().nullable(),
@@ -82,6 +83,7 @@ const updateNewsValidationSchema = z.object({
       .min(1, "Short details are required")
       .optional(),
     content: z.string().min(1, "Content is required").optional(),
+    contentType: z.enum(["Text", "Video", "Image", "Mixed"]),
 
     featuredImageUrl: z
       .string()
@@ -117,13 +119,22 @@ const updateNewsValidationSchema = z.object({
       .enum(["draft", "pending", "approved", "published", "archived"])
       .optional(),
 
+    isAnonymous: z.boolean().optional(),
     isDeleted: z.boolean().optional(),
 
     publishAt: z.string().datetime().optional().nullable(),
   }),
 });
 
+const updateStatusValidationSchema = z.object({
+  body: z.object({
+    status: z.enum(["draft", "pending", "published", "archived", "rejected", "blocked"]),
+    approvedBy: z.string().trim().min(1, "Authority ID is required"),
+  }),
+});
+
 export const newsValidations = {
   createNewsValidationSchema,
   updateNewsValidationSchema,
+  updateStatusValidationSchema,
 };

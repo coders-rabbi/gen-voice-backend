@@ -15,6 +15,10 @@ router.get(
   "/:reporterId",
   ReporterController.getSingleReporterUsingReportIdController,
 );
+router.get(
+  "/user-id/:userId",
+  ReporterController.getSingleReporterUsingUserIdController,
+);
 router.patch(
   "/:reporterId",
   validateRequest(reporterValidations.updateReporterValidationSchema),

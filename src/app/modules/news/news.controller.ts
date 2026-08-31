@@ -1,13 +1,28 @@
 import { NextFunction, Request, Response } from "express";
-import { NewsServices } from "./news.services";
+import { NewsServices } from "./news.service";
 import sendResponse from "../../utils/sendreponse";
 import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 
 const createNewsController = catchAsync(async (req, res) => {
-  console.log(req.user);
+  // const authenticatedUserId = req.user?.id ?? req.user?._id;
+  const authenticatedUserId = req.headers.authorization;
+
+  if (!authenticatedUserId) {
+    return sendResponse(res, {
+      statusCode: StatusCodes.UNAUTHORIZED,
+      success: false,
+      message: "You must be logged in to create news",
+      data: null,
+    });
+  }
+
   const newsData = req.body;
-  const result = await NewsServices.createNewsIntoDB(newsData);
+  const result = await NewsServices.createNewsIntoDB(
+    newsData,
+    authenticatedUserId,
+  );
+
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -23,6 +38,40 @@ const getAllNewsController = catchAsync(async (req, res, next) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: "All news are successfully retrive from the database",
+    data: result,
+  });
+});
+
+const getAllVideNewsController = catchAsync(async (req, res) => {
+  const result = await NewsServices.getAllVideoNewsFromDB(req.query);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "All Video News are successfully retrive from the database",
+    data: result,
+  });
+});
+
+const getSingleReporterNewsController = catchAsync(async (req, res) => {
+  const result = await NewsServices.getSingleReporterNewsFromDB(
+    req.user?._id,
+    req.query,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "All News are successfully retrive from the database",
+    data: result,
+  });
+});
+
+const getHomePageNewsController = catchAsync(async (req, res) => {
+  const result = await NewsServices.getHomePageNewsFromDB();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Homepage news retrieved successfully",
     data: result,
   });
 });
@@ -43,9 +92,6 @@ const getSingleNewsController = catchAsync(
 const updateNewsController = catchAsync(async (req, res, next) => {
   const { newsId } = req.params;
   const payload = req.body;
-
-  console.log(newsId, payload);
-
   const result = await NewsServices.updateNewsIntoDB(newsId as string, payload);
 
   sendResponse(res, {
@@ -56,9 +102,26 @@ const updateNewsController = catchAsync(async (req, res, next) => {
   });
 });
 
+const updateNewsStatusController = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const statusData = req.body;
+  const result = await NewsServices.updateNewsStatus(id as string, statusData);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "News update successful",
+    data: result,
+  });
+});
+
 export const NewsControllers = {
   createNewsController,
   getAllNewsController,
+  getAllVideNewsController,
+  getHomePageNewsController,
   getSingleNewsController,
+  updateNewsStatusController,
+  getSingleReporterNewsController,
   updateNewsController,
 };

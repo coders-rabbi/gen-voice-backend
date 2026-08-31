@@ -14,9 +14,15 @@ const createReporterIntoDB = async (reporter: TReporter) => {
 };
 
 const getAllReporterFromDB = async (query: Record<string, unknown>) => {
-  const searchAbleFields = ["email", "name.firstName", "presentAddress"];
+  const searchAbleFields = ["email", "name.firstName", "presentAddress",];
 
-  const reporterQuery = new QueryBuilder(Reporter.find(), query)
+  const reporterQuery = new QueryBuilder(
+    Reporter.find().populate({
+      path: "user",
+      select: "_id email role isDeleted isActive",
+    }),
+    query,
+  )
     .search(searchAbleFields)
     .filter()
     .sort()
@@ -24,6 +30,13 @@ const getAllReporterFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await reporterQuery.modelQuery;
+  return result;
+};
+
+const getSingleReporterUsingUserIdFromBD = async (userId: string) => {
+  const result = await Reporter.findOne({
+    user: userId,
+  });
   return result;
 };
 
@@ -70,4 +83,5 @@ export const ReporterServices = {
   getAllReporterFromDB,
   getSingleReporterUsingReporterId,
   updateSingleReporterInfoFromDB,
+  getSingleReporterUsingUserIdFromBD,
 };

@@ -42,6 +42,19 @@ const getSingleReporterUsingReportIdController = catchAsync(
   },
 );
 
+const getSingleReporterUsingUserIdController = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const result = await ReporterServices.getSingleReporterUsingUserIdFromBD(
+    userId as string,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Reporter successfully retrive from the database",
+    data: result,
+  });
+});
+
 const updateSingleReporterController = catchAsync(async (req, res) => {
   const { reporterId } = req.params;
   const updatedData = req.body;
@@ -61,4 +74,5 @@ export const ReporterController = {
   getAllReporterController,
   getSingleReporterUsingReportIdController,
   updateSingleReporterController,
+  getSingleReporterUsingUserIdController,
 };

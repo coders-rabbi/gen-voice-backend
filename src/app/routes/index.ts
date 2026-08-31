@@ -4,6 +4,7 @@ import { UserRouters } from "../modules/users/user.route";
 import { NewsRouter } from "../modules/news/news.route";
 import { CategoriesRouter } from "../modules/category/category.route";
 import { authRoutes } from "../modules/auth/auth.route";
+import { uploadhRoutes } from "../modules/upload/upload.route";
 
 const router = Router();
 
@@ -27,6 +28,10 @@ const modulesRoutes = [
   {
     path: "/auth",
     route: authRoutes,
+  },
+  {
+    path: "/upload",
+    route: uploadhRoutes,
   },
 ];
 

@@ -11,7 +11,7 @@ router.post(
   validateRequest(AuthValidations.loginValidationSchema),
   AuthControllers.loginUserController,
 );
-router.post(
+router.patch(
   "/recover-password",
   authValidation(
     USER_ROLE.ADMIN,
@@ -22,6 +22,11 @@ router.post(
   ),
   validateRequest(AuthValidations.changePasswordValidationSchema),
   AuthControllers.changePassword,
+);
+router.post(
+  "/refresh-token",
+  validateRequest(AuthValidations.refreshTokenValidationSchema),
+  AuthControllers.refreshToken,
 );
 
 export const authRoutes = router;

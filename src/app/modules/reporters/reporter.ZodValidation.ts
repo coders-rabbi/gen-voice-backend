@@ -35,6 +35,8 @@ export const ReporterValidationSchema = z.object({
     designation: z.string().trim().min(4, "Designation is required"),
 
     facebook: z.url("Facebook URL is invalid").optional(),
+
+    isActive: z.enum(["active", "blocked", "suspended", "pending", "rejected"]),
   }),
 });
 
