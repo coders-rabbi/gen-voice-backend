@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 import config from "../../config";
 import { createToken } from "./auth.utils";
+import { Admin } from "../admin/admin.model";
 
 const loginUser = async (payload: TLoginUser) => {
   const isUserExist = await User.findOne({ email: payload?.email }).select(
@@ -54,6 +55,56 @@ const loginUser = async (payload: TLoginUser) => {
   );
 
   return { accessToken, refreshToken };
+};
+
+const adminLogin = async (payload: TLoginUser) => {
+  const isUserExist = await Admin.findOne({ email: payload?.email }).select(
+    "+password",
+  );
+  if (!isUserExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, "This user is not found!");
+  }
+
+  const isDeleted = isUserExist?.isDeleted;
+  if (isDeleted) {
+    throw new AppError(StatusCodes.FORBIDDEN, "This user is deleted!");
+  }
+
+  const isBlocked = isUserExist?.isActive;
+  if (isBlocked === "blocked") {
+    throw new AppError(StatusCodes.FORBIDDEN, "This user is blocked!");
+  }
+
+  const isPasswordMatch = await bcrypt.compare(
+    payload?.password,
+    isUserExist?.password,
+  );
+
+  if (!isPasswordMatch) {
+    throw new AppError(StatusCodes.FORBIDDEN, "This password is not matched");
+  }
+
+  const jwtPayload = {
+    _id: isUserExist?._id,
+    adminName: isUserExist?.adminName,
+    email: isUserExist?.email,
+    role: isUserExist?.role,
+    isDeleted: isUserExist.isDeleted,
+  };
+
+  const adminAccessToken = createToken(
+    jwtPayload,
+    config.jwt_access_token as string,
+    config.jwt_access_expires_in as SignOptions["expiresIn"],
+  );
+
+  const adminRefreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_token as string,
+    config.jwt_refresh_expires_in as SignOptions["expiresIn"],
+  );
+
+  return { adminAccessToken, adminRefreshToken };
 };
 
 const passwordChange = async (
@@ -162,6 +213,7 @@ const refreshToken = async (token: string) => {
 
 export const AuthService = {
   loginUser,
+  adminLogin,
   passwordChange,
   refreshToken,
 };

@@ -22,6 +22,23 @@ const loginUserController = catchAsync(async (req, res) => {
   });
 });
 
+const adminLoginController = catchAsync(async (req, res) => {
+  const result = await AuthService.adminLogin(req.body);
+
+  const { adminRefreshToken, adminAccessToken } = result;
+  res.cookie("adminRefreshToken", adminRefreshToken, {
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+  });
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Successfully logged in",
+    data: adminAccessToken,
+  });
+});
+
 const changePassword = catchAsync(async (req, res) => {
   if (!req.user) {
     throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized access");
@@ -50,6 +67,7 @@ const refreshToken = catchAsync(async (req, res) => {
 
 export const AuthControllers = {
   loginUserController,
+  adminLoginController,
   changePassword,
   refreshToken,
 };

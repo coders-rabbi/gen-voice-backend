@@ -11,6 +11,11 @@ router.post(
   validateRequest(AuthValidations.loginValidationSchema),
   AuthControllers.loginUserController,
 );
+router.post(
+  "/admin-login",
+  validateRequest(AuthValidations.loginValidationSchema),
+  AuthControllers.adminLoginController,
+);
 router.patch(
   "/recover-password",
   authValidation(

@@ -30,7 +30,7 @@ const createReporterIntoDB = async (
     if (!newReporter.length) {
       throw new AppError(StatusCodes.BAD_REQUEST, "Reporter create to fail");
     }
-
+                                                                                                                                                  
     await session.commitTransaction();
     await session.endSession();
 
@@ -76,6 +76,54 @@ const updateSingleUserFromBD = async (id: string, newPassword: string) => {
   //যেহেতু password tai return korbo na.
 };
 
+const updateSingleUserStatusFromDB = async (id: string, payload: string) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const reporter = await Reporter.findById(id).session(session);
+    if (!reporter) {
+      throw new AppError(StatusCodes.NOT_FOUND, "Reporter not found");
+    }
+
+    const userId = reporter.user;
+    if (!userId) {
+      throw new AppError(
+        StatusCodes.NOT_FOUND,
+        "User not found for the reporter",
+      );
+    }
+
+    const userUpdate = await User.findByIdAndUpdate(
+      userId,
+      { isActive: payload },
+      { returnDocument: "after", session },
+    );
+
+    if (!userUpdate) {
+      throw new AppError(StatusCodes.BAD_REQUEST, "User failed to update");
+    }
+
+    const reporterUpdate = await Reporter.findByIdAndUpdate(
+      id,
+      { isActive: payload },
+      { returnDocument: "after", session },
+    );
+
+    if (!reporterUpdate) {
+      throw new AppError(StatusCodes.BAD_REQUEST, "Reporter failed to update");
+    }
+
+    await session.commitTransaction();
+    return userUpdate;
+  } catch (err) {
+    await session.abortTransaction();
+    throw err;
+  } finally {
+    await session.endSession();
+  }
+};
+
 const deleteUserFromDB = async (id: string) => {
   const result = await User.updateOne({ _id: id }, { isDeleted: true });
   return result;
@@ -85,6 +133,7 @@ export const UserServices = {
   createReporterIntoDB,
   createUserBySuperAdminIntoDB,
   deleteUserFromDB,
+  updateSingleUserStatusFromDB,
   getAllUsersFromDB,
   getSingleUserFromDB,
   updateSingleUserFromBD,

@@ -37,7 +37,7 @@ router.patch(
 
 router.patch(
   "/status/:id",
-  authValidation(USER_ROLE.ADMIN, USER_ROLE.EDITOR),
+  authValidation(USER_ROLE.ADMIN, USER_ROLE.EDITOR, USER_ROLE.SUPER_ADMIN),
   validateRequest(newsValidations.updateStatusValidationSchema),
   NewsControllers.updateNewsStatusController,
 );

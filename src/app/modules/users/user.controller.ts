@@ -65,6 +65,21 @@ const updatePasswordController = catchAsync(async (req, res) => {
   });
 });
 
+const updateUserStatusController = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const result = await UserServices.updateSingleUserStatusFromDB(
+    id as string,
+    status,
+  );
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User status updated successfully",
+    data: result,
+  });
+});
+
 const deleteUserController = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await UserServices.deleteUserFromDB(id as string);
@@ -83,4 +98,5 @@ export const UserController = {
   getAllUserController,
   getSingleUserController,
   updatePasswordController,
+  updateUserStatusController,
 };

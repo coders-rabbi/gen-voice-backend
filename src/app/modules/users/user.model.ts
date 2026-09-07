@@ -4,8 +4,6 @@ import { TUser, UserModel } from "./user.interface";
 import config from "../../config";
 import { USER_ROLE } from "./user.constant";
 
-
-
 const UserSchema = new Schema<TUser, UserModel>(
   {
     email: {
@@ -17,7 +15,7 @@ const UserSchema = new Schema<TUser, UserModel>(
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
     },
     password: { type: String, required: true, select: false },
-    passwordChangeAt: {type: Date},
+    passwordChangeAt: { type: Date },
     role: {
       type: String,
       enum: Object.values(USER_ROLE),
@@ -50,7 +48,6 @@ UserSchema.pre("save", async function () {
     Number(config.bcrypt_salt_rounds) || 10,
   );
 });
-
 
 // soft-delete filter on aggregate pipelines
 UserSchema.pre("aggregate", function () {

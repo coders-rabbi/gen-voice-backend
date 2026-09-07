@@ -41,7 +41,7 @@ const CategorySchema = new Schema<TCategory>(
 );
 
 CategorySchema.pre("save", async function () {
-  if (!this.isNew) return; // শুধু নতুন document এর জন্য check করবে
+  if (!this.isNew) return; 
 
   const existingCategory = await Category.findOne({
     categoryName: this.categoryName,
