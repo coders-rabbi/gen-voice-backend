@@ -1,9 +1,9 @@
 export const Features = [
   "categories",
-  "registeredUsers",
-  "allPosts",
-  "allPolls",
-  "usersAndRoll",
-  "websiteConfiguration",
-  "settings",
+  "register-user",
+  "all-news",
+  "all-poll",
+  "user-role",
+  "web-config",
+  "setting",
 ] as const;

@@ -37,6 +37,18 @@ const getSingleRole = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleRoleByName = catchAsync(async (req, res) => {
+  const { roleName } = req.params;
+  const response = await RoleServices.getSingleRoleByName(roleName as string);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Role retrive successfull",
+    data: response,
+  });
+});
+
 const updateRole = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await RoleServices.updateRoleIntoDB(id as string, req.body);
@@ -66,6 +78,7 @@ export const RoleControllers = {
   createRole,
   getAllRole,
   getSingleRole,
+  getSingleRoleByName,
   updateRole,
   deleteRole,
 };

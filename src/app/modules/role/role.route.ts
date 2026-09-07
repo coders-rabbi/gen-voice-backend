@@ -26,6 +26,8 @@ router.get(
   RoleControllers.getSingleRole,
 );
 
+router.get("/name/:roleName", RoleControllers.getSingleRoleByName);
+
 router.patch(
   "/:id/update",
   authValidation(USER_ROLE.SUPER_ADMIN),

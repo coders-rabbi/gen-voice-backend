@@ -41,6 +41,11 @@ const getSingleRoleFromDB = async (id: string) => {
   return result;
 };
 
+const getSingleRoleByName = async (name: string) => {
+  const result = await Role.findOne({ roleName: name });
+  return result;
+};
+
 const updateRoleIntoDB = async (id: string, payload: Partial<TRole>) => {
   const role = await Role.findOne({ _id: id, isDeleted: false });
 
@@ -77,6 +82,7 @@ export const RoleServices = {
   createRoleIntoDB,
   getAllRoleFromDB,
   getSingleRoleFromDB,
+  getSingleRoleByName,
   updateRoleIntoDB,
   deleteRoleFromDB,
 };
