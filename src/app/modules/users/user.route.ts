@@ -4,7 +4,7 @@ import authValidation from "../../middleware/authValidation";
 import { USER_ROLE } from "./user.constant";
 const router = express.Router();
 
-router.post("/create_reporter", UserController.createReporterController);
+router.post("/create-reporter", UserController.createReporterController);
 router.post(
   "/create_user-by-superadmin",
   UserController.createUserBySuperAdminController,

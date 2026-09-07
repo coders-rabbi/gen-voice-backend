@@ -23,16 +23,28 @@ const createReporterIntoDB = async (
     if (!createdUser) {
       throw new AppError(StatusCodes.BAD_REQUEST, "User create to fail");
     }
+    const lastReporter = await Reporter.findOne()
+      .sort({ id: -1 })
+      .session(session);
 
+    let nextNumber = 1;
+    if (lastReporter?.id) {
+      const match = lastReporter.id.match(/(\d+)$/);
+      if (match && match[1]) {
+        nextNumber = parseInt(match[1], 10) + 1;
+      }
+    }
+
+    reporterData.id = `REP-${nextNumber.toString().padStart(4, "0")}`;
     reporterData.user = createdUser._id;
+
     const newReporter = await Reporter.create([reporterData], { session });
 
     if (!newReporter.length) {
       throw new AppError(StatusCodes.BAD_REQUEST, "Reporter create to fail");
     }
-                                                                                                                                                  
+
     await session.commitTransaction();
-    await session.endSession();
 
     return newReporter;
   } catch (err) {
