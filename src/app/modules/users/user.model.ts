@@ -19,7 +19,7 @@ const UserSchema = new Schema<TUser, UserModel>(
     role: {
       type: String,
       enum: Object.values(USER_ROLE),
-      default: USER_ROLE.USER,
+      default: USER_ROLE.REPORTER,
     },
     isDeleted: { type: Boolean, default: false },
     isActive: {

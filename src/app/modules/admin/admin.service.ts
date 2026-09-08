@@ -7,11 +7,29 @@ const createAdminIntoBd = async (payload: TAdmin) => {
 };
 
 const getAdminfromBD = async () => {
-  const result = await Admin.find();
-  return result;
+  const response = await Admin.find();
+  return response;
+};
+
+const updateAdminInfoFromDB = async (id: string, payload: Partial<TAdmin>) => {
+  const response = await Admin.findByIdAndUpdate(
+    id,
+    { adminName: payload.adminName },
+    { returnDocument: "after", runValidators: true },
+  );
+  return response;
+};
+
+const deleteAdminUserFromBD = async (id: string) => {
+  const response = await Admin.findByIdAndDelete(id, {
+    isDeleted: true,
+  });
+  return response;
 };
 
 export const adminService = {
+  updateAdminInfoFromDB,
+  deleteAdminUserFromBD,
   createAdminIntoBd,
   getAdminfromBD,
 };

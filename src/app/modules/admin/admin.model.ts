@@ -61,12 +61,12 @@ AdminSchema.pre("save", async function () {
   );
 });
 
-AdminSchema.pre("find", function () {
-  this.where({
-    role: { $ne: "super_admin" },
-    isDeleted: false,
-    isActive: "active",
-  });
-});
+// AdminSchema.pre("find", function () {
+//   this.where({
+//     role: { $ne: "super_admin" },
+//     isDeleted: false,
+//     isActive: "active",
+//   });
+// });
 
 export const Admin = model<TAdmin>("admin", AdminSchema);

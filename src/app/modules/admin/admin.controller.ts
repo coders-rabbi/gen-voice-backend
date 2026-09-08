@@ -23,4 +23,35 @@ const getAdminController = catchAsync(async (req, res) => {
   });
 });
 
-export const adminController = { createAdminController, getAdminController };
+const updateAdminInfoController = catchAsync(async (req, res) => {
+  const payload = req.body;
+  const { id } = req.params;
+  const response = await adminService.updateAdminInfoFromDB(
+    id as string,
+    payload,
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Your info update successfull",
+    data: response,
+  });
+});
+
+const deleteAdminUserController = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const response = await adminService.deleteAdminUserFromBD(id as string);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "User deleted successful",
+    data: response,
+  });
+});
+
+export const adminController = {
+  createAdminController,
+  getAdminController,
+  updateAdminInfoController,
+  deleteAdminUserController,
+};

@@ -32,7 +32,6 @@ const createNewsController = catchAsync(async (req, res) => {
 });
 
 const getAllNewsController = catchAsync(async (req, res, next) => {
-  console.log(req.user);
   const result = await NewsServices.getAllNewsFromDB(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,

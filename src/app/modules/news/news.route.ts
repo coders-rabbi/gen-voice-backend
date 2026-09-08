@@ -5,6 +5,7 @@ import { newsValidations } from "./news.validation";
 import authValidation from "../../middleware/authValidation";
 import { USER_ROLE } from "../users/user.constant";
 import validateRequest from "../../middleware/validateRequest";
+import { ADMIN_ROLE } from "../admin/admin.constant";
 const router = express.Router();
 
 router.post(
@@ -27,9 +28,9 @@ router.patch(
   "/:newsId",
   authValidation(
     USER_ROLE?.REPORTER,
-    USER_ROLE?.EDITOR,
-    USER_ROLE?.ADMIN,
-    USER_ROLE?.SUPER_ADMIN,
+    ADMIN_ROLE?.EDITOR,
+    ADMIN_ROLE?.ADMIN,
+    ADMIN_ROLE?.SUPER_ADMIN,
   ),
   valiadateRequest(newsValidations.updateNewsValidationSchema),
   NewsControllers.updateNewsController,
@@ -37,7 +38,7 @@ router.patch(
 
 router.patch(
   "/status/:id",
-  authValidation(USER_ROLE.ADMIN, USER_ROLE.EDITOR, USER_ROLE.SUPER_ADMIN),
+  authValidation(ADMIN_ROLE.ADMIN, ADMIN_ROLE.EDITOR, ADMIN_ROLE.SUPER_ADMIN),
   validateRequest(newsValidations.updateStatusValidationSchema),
   NewsControllers.updateNewsStatusController,
 );

@@ -2,6 +2,7 @@ import express from "express";
 import { UserController } from "./user.controller";
 import authValidation from "../../middleware/authValidation";
 import { USER_ROLE } from "./user.constant";
+import { ADMIN_ROLE } from "../admin/admin.constant";
 const router = express.Router();
 
 router.post("/create-reporter", UserController.createReporterController);
@@ -18,7 +19,7 @@ router.put("/recover_password/:id", UserController.updatePasswordController);
 router.delete("/delete_user/:id", UserController.deleteUserController);
 router.patch(
   "/:id/status",
-  authValidation(USER_ROLE.SUPER_ADMIN, USER_ROLE.ADMIN),
+  authValidation(ADMIN_ROLE.SUPER_ADMIN, ADMIN_ROLE.ADMIN),
   UserController.updateUserStatusController,
 );
 
