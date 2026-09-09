@@ -4,6 +4,7 @@ import { AuthValidations } from "./auth.valiadtion";
 import { AuthControllers } from "./auth.controller";
 import authValidation from "../../middleware/authValidation";
 import { USER_ROLE } from "../users/user.constant";
+import { ADMIN_ROLE } from "../admin/admin.constant";
 const router = express.Router();
 
 router.post(
@@ -19,11 +20,11 @@ router.post(
 router.patch(
   "/recover-password",
   authValidation(
-    USER_ROLE.ADMIN,
-    USER_ROLE.EDITOR,
+    ADMIN_ROLE.ADMIN,
+    ADMIN_ROLE.EDITOR,
     USER_ROLE.REPORTER,
-    USER_ROLE.SUPER_ADMIN,
-    USER_ROLE.USER,
+    ADMIN_ROLE.SUPER_ADMIN,
+    USER_ROLE.VIEWER,
   ),
   validateRequest(AuthValidations.changePasswordValidationSchema),
   AuthControllers.changePassword,
