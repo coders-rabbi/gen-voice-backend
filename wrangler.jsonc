@@ -1,6 +1,6 @@
 {
   "name": "gen-voice-backend",
-  "main": "src/worker.ts",
+  "main": "dist/server.js",
   "compatibility_date": "2025-07-30",
   "compatibility_flags": [
     "nodejs_compat",
