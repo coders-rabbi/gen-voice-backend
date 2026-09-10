@@ -47,4 +47,9 @@ router.patch(
   NewsControllers.updateNewsStatusController,
 );
 
+router.get(
+  "/monthly-post-count/:reporterId",
+  NewsControllers.getMonthlyPostCountController,
+);
+
 export const NewsRouter = router;

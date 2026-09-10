@@ -5,6 +5,7 @@ import { News } from "./news.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { Category } from "../category/category.model";
 import { Reporter } from "../reporters/reporter.model";
+import { Types } from "mongoose";
 
 const createNewsIntoDB = async (
   newsData: TNews,
@@ -278,6 +279,57 @@ const updateNewsStatus = async (id: string, payload: Partial<TNews>) => {
   return result;
 };
 
+const getMonthlyPostCountFromDB = async (reporterId: string, year?: number) => {
+  const targetYear = year || new Date().getFullYear();
+
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const result = await News.aggregate([
+    {
+      $match: {
+        reporterId: new Types.ObjectId(reporterId),
+        contentType: "Text",
+        createdAt: {
+          $gte: new Date(`${targetYear}-01-01T00:00:00.000Z`),
+          $lte: new Date(`${targetYear}-12-31T23:59:59.999Z`),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: { $month: "$createdAt" },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const monthlyData = monthNames.map((name, index) => {
+    const found = result.find((r) => r._id === index + 1);
+    return {
+      month: name,
+      count: found ? found.count : 0,
+    };
+  });
+
+  return {
+    year: targetYear,
+    data: monthlyData,
+  };
+};
+
 export const NewsServices = {
   createNewsIntoDB,
   getAllNewsFromDB,
@@ -289,4 +341,5 @@ export const NewsServices = {
   getSingleNewsFromDB,
   updateNewsStatus,
   updateNewsIntoDB,
+  getMonthlyPostCountFromDB,
 };

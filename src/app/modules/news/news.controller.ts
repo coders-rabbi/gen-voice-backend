@@ -139,6 +139,23 @@ const updateNewsStatusController = catchAsync(async (req, res) => {
   });
 });
 
+const getMonthlyPostCountController = catchAsync(async (req, res, next) => {
+  const { reporterId } = req.params;
+  const { year } = req.query;
+
+  const result = await NewsServices.getMonthlyPostCountFromDB(
+    reporterId as string,
+    year ? Number(year) : undefined,
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Monthly post count is successfully retrieved from the database",
+    data: result,
+  });
+});
+
 export const NewsControllers = {
   createNewsController,
   getAllNewsController,
@@ -150,4 +167,5 @@ export const NewsControllers = {
   getNewsByCategoryIDController,
   getNewsByReporterId,
   updateNewsController,
+  getMonthlyPostCountController,
 };
