@@ -168,9 +168,20 @@ const getSingleReporterNewsFromDB = async (
   return result;
 };
 
+const getNewsByReporterId = async (repId: string) => {
+  if (!repId) return null;
+  const response = await News.find({ reporterId: repId });
+  return response;
+};
+
 const getSingleNewsFromDB = async (id: string) => {
   const result = await News.findById(id); // ✅ সঠিক
   return result;
+};
+
+const getNewsByCategoryIDFromBD = async (categoryId: string) => {
+  const response = await News.find({ categoryId: categoryId });
+  return response;
 };
 
 const getHomePageNewsFromDB = async () => {
@@ -272,7 +283,9 @@ export const NewsServices = {
   getAllNewsFromDB,
   getAllVideoNewsFromDB,
   getSingleReporterNewsFromDB,
+  getNewsByReporterId,
   getHomePageNewsFromDB,
+  getNewsByCategoryIDFromBD,
   getSingleNewsFromDB,
   updateNewsStatus,
   updateNewsIntoDB,

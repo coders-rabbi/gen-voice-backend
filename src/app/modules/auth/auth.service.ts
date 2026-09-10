@@ -4,9 +4,9 @@ import { User } from "../users/user.model";
 import { TLoginUser } from "./auth.interface";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
-import config from "../../config";
 import { createToken } from "./auth.utils";
 import { Admin } from "../admin/admin.model";
+import config from "../../config";
 
 const loginUser = async (payload: TLoginUser) => {
   const isUserExist = await User.findOne({ email: payload?.email }).select(
@@ -58,6 +58,7 @@ const loginUser = async (payload: TLoginUser) => {
 };
 
 const adminLogin = async (payload: TLoginUser) => {
+  console.log("CONFIG CHECK:", config);
   const isUserExist = await Admin.findOne({ email: payload?.email }).select(
     "+password",
   );

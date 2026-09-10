@@ -64,6 +64,17 @@ const getSingleReporterNewsController = catchAsync(async (req, res) => {
   });
 });
 
+const getNewsByReporterId = catchAsync(async (req, res) => {
+  const { repId } = req.params;
+  const result = await NewsServices.getNewsByReporterId(repId as string);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Reporter all News are successfully retrieved from the database",
+    data: result,
+  });
+});
+
 const getHomePageNewsController = catchAsync(async (req, res) => {
   const result = await NewsServices.getHomePageNewsFromDB();
 
@@ -87,6 +98,20 @@ const getSingleNewsController = catchAsync(
     });
   },
 );
+
+const getNewsByCategoryIDController = catchAsync(async (req, res) => {
+  const { categoryId } = req.params;
+  const response = await NewsServices.getNewsByCategoryIDFromBD(
+    categoryId as string,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "News Retrive by category",
+    data: response,
+  });
+});
 
 const updateNewsController = catchAsync(async (req, res, next) => {
   const { newsId } = req.params;
@@ -122,5 +147,7 @@ export const NewsControllers = {
   getSingleNewsController,
   updateNewsStatusController,
   getSingleReporterNewsController,
+  getNewsByCategoryIDController,
+  getNewsByReporterId,
   updateNewsController,
 };

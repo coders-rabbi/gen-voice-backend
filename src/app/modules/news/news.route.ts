@@ -24,6 +24,11 @@ router.get(
   NewsControllers.getSingleReporterNewsController,
 );
 router.get("/:id", NewsControllers.getSingleNewsController);
+router.get("/:repId/news", NewsControllers.getNewsByReporterId);
+router.get(
+  "/:categoryId/category",
+  NewsControllers.getNewsByCategoryIDController,
+);
 router.patch(
   "/:newsId",
   authValidation(
@@ -35,7 +40,6 @@ router.patch(
   valiadateRequest(newsValidations.updateNewsValidationSchema),
   NewsControllers.updateNewsController,
 );
-
 router.patch(
   "/status/:id",
   authValidation(ADMIN_ROLE.ADMIN, ADMIN_ROLE.EDITOR, ADMIN_ROLE.SUPER_ADMIN),

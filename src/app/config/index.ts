@@ -12,3 +12,6 @@ export default {
   jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
   jwt_access_expires_in: process.env.JWT_ACCESS_EXPIRES_IN,
 };
+
+dotenv.config({ path: path.join(process.cwd(), ".env") });
+console.log("ENV LOADED:", process.env.JWT_ACCESS_SECRET ? "YES" : "NO");
