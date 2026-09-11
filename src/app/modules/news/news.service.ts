@@ -381,7 +381,7 @@ const incrementNewsViewInDB = async (newsId: string) => {
   const result = await News.findOneAndUpdate(
     { newsId },
     { $inc: { views: 1 } },
-    { new: true, select: "views" },
+    { returnDocument: "after", select: "views" },
   );
   return result;
 };
