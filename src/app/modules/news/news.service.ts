@@ -6,6 +6,7 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { Category } from "../category/category.model";
 import { Reporter } from "../reporters/reporter.model";
 import { Types } from "mongoose";
+import { commentServices } from "../comment/comment.service";
 
 const createNewsIntoDB = async (
   newsData: TNews,
@@ -83,10 +84,18 @@ const getAllNewsFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await newsQuery.modelQuery;
+  const newsIds = result.map((item) => item.newsId);
 
-  return result;
+  const commentCounts =
+    await commentServices.getCommentCountsByNewsIds(newsIds);
+
+  const dataWithCommentCount = result.map((item) => ({
+    ...item.toObject(),
+    commentCount: commentCounts[item.newsId] || 0,
+  }));
+
+  return dataWithCommentCount;
 };
-
 const getAllVideoNewsFromDB = async (query: Record<string, unknown>) => {
   const searchAbleFiends = [
     "title",
@@ -330,6 +339,53 @@ const getMonthlyPostCountFromDB = async (reporterId: string, year?: number) => {
   };
 };
 
+const getPopularNewsFromBD = async (query: Record<string, unknown>) => {
+  const searchAbleFields = [
+    "title",
+    "shortDetails",
+    "content",
+    "location",
+    "tags",
+  ];
+
+  const newsQuery = new QueryBuilder(
+    News.find({ contentType: { $eq: "Text" } })
+      .sort({ views: -1 })
+      .populate([
+        {
+          path: "reporterId",
+          select: "name",
+        },
+        {
+          path: "approvedBy",
+          select: "role email",
+        },
+        {
+          path: "categoryId",
+          select: "categoryName",
+        },
+      ]),
+    query,
+  )
+    .search(searchAbleFields)
+    .filter()
+    .paginate()
+    .fields();
+
+  const result = await newsQuery.modelQuery;
+
+  return result;
+};
+
+const incrementNewsViewInDB = async (newsId: string) => {
+  const result = await News.findOneAndUpdate(
+    { newsId },
+    { $inc: { views: 1 } },
+    { new: true, select: "views" },
+  );
+  return result;
+};
+
 export const NewsServices = {
   createNewsIntoDB,
   getAllNewsFromDB,
@@ -342,4 +398,6 @@ export const NewsServices = {
   updateNewsStatus,
   updateNewsIntoDB,
   getMonthlyPostCountFromDB,
+  incrementNewsViewInDB,
+  getPopularNewsFromBD,
 };

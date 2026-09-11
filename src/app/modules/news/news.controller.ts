@@ -3,6 +3,7 @@ import { NewsServices } from "./news.service";
 import sendResponse from "../../utils/sendreponse";
 import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
+import { News } from "./news.model";
 
 const createNewsController = catchAsync(async (req, res) => {
   // const authenticatedUserId = req.user?.id ?? req.user?._id;
@@ -156,6 +157,29 @@ const getMonthlyPostCountController = catchAsync(async (req, res, next) => {
   });
 });
 
+const incrementNewsViewController = catchAsync(async (req, res, next) => {
+  const { newsId } = req.params;
+  const result = await NewsServices.incrementNewsViewInDB(newsId as string);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "News view count updated successfully",
+    data: result,
+  });
+});
+
+const pupularNewsController = catchAsync(async (req, res) => {
+  const response = await NewsServices.getPopularNewsFromBD(req.query);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Popular news retrive done",
+    data: response,
+  });
+});
+
 export const NewsControllers = {
   createNewsController,
   getAllNewsController,
@@ -168,4 +192,6 @@ export const NewsControllers = {
   getNewsByReporterId,
   updateNewsController,
   getMonthlyPostCountController,
+  incrementNewsViewController,
+  pupularNewsController,
 };

@@ -34,6 +34,7 @@ export type TNews = {
   publishAt?: Date;
   createdAt: Date;
   updatedAt: Date;
+  views: number;
 };
 
 // export const NewModel =

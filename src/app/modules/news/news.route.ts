@@ -16,13 +16,13 @@ router.post(
 );
 router.get("/", NewsControllers.getAllNewsController);
 router.get("/video-news", NewsControllers.getAllVideNewsController);
-router.get("/video-news", NewsControllers.getAllVideNewsController);
 router.get("/homecategory", NewsControllers.getHomePageNewsController);
 router.get(
   "/reporterNews",
   authValidation(USER_ROLE.REPORTER),
   NewsControllers.getSingleReporterNewsController,
 );
+router.get("/popular-news", NewsControllers.pupularNewsController);
 router.get("/:id", NewsControllers.getSingleNewsController);
 router.get("/:repId/news", NewsControllers.getNewsByReporterId);
 router.get(
@@ -50,6 +50,11 @@ router.patch(
 router.get(
   "/monthly-post-count/:reporterId",
   NewsControllers.getMonthlyPostCountController,
+);
+
+router.patch(
+  "/increment-view/:newsId",
+  NewsControllers.incrementNewsViewController,
 );
 
 export const NewsRouter = router;
