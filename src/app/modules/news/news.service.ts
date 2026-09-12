@@ -141,7 +141,6 @@ const getSingleReporterNewsFromDB = async (
     throw new AppError(StatusCodes.NOT_FOUND, "Reporter not found");
   }
   const repId = reporter._id;
-  console.log(repId);
   const searchAbleFiends = [
     "title",
     "shortDetails",

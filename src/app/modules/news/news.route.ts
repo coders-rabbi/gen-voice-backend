@@ -18,7 +18,7 @@ router.get("/", NewsControllers.getAllNewsController);
 router.get("/video-news", NewsControllers.getAllVideNewsController);
 router.get("/homecategory", NewsControllers.getHomePageNewsController);
 router.get(
-  "/reporterNews",
+  "/:reporterNews",
   authValidation(USER_ROLE.REPORTER),
   NewsControllers.getSingleReporterNewsController,
 );
