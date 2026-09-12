@@ -8,6 +8,7 @@ import { uploadhRoutes } from "../modules/upload/upload.route";
 import { RoleRoutes } from "../modules/role/role.route";
 import { adminRouters } from "../modules/admin/admin.route";
 import { CommentRouter } from "../modules/comment/comment.route";
+import { ReactionRoutes } from "../modules/reactions/reaction.route";
 
 const router = Router();
 
@@ -47,6 +48,10 @@ const modulesRoutes = [
   {
     path: "/comments",
     route: CommentRouter,
+  },
+  {
+    path: "/reactions",
+    route: ReactionRoutes,
   },
 ];
 
