@@ -4,6 +4,7 @@ import { Reporter } from "./reporter.model";
 import AppError from "../../error/AppError";
 import { StatusCodes } from "http-status-codes";
 import QueryBuilder from "../../builder/QueryBuilder";
+import { News } from "../news/news.model";
 
 const createReporterIntoDB = async (reporter: TReporter) => {
   if (await Reporter.isReporterExists(reporter.id)) {
@@ -14,7 +15,7 @@ const createReporterIntoDB = async (reporter: TReporter) => {
 };
 
 const getAllReporterFromDB = async (query: Record<string, unknown>) => {
-  const searchAbleFields = ["email", "name.firstName", "presentAddress",];
+  const searchAbleFields = ["email", "name.firstName", "presentAddress"];
 
   const reporterQuery = new QueryBuilder(
     Reporter.find().populate({
@@ -30,7 +31,39 @@ const getAllReporterFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await reporterQuery.modelQuery;
-  return result;
+
+  // এই page-এ যতগুলো reporter এসেছে, শুধু তাদের _id গুলো নিয়ে news count বের করা
+  const reporterIds = result.map((reporter) => reporter._id);
+
+  const newsCounts = await News.aggregate([
+    {
+      $match: {
+        reporterId: { $in: reporterIds },
+      },
+    },
+    {
+      $group: {
+        _id: "$reporterId",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  // দ্রুত lookup এর জন্য একটা Map বানানো: reporterId -> count
+  const countMap = new Map(
+    newsCounts.map((item) => [item._id.toString(), item.count]),
+  );
+
+  // প্রতিটা reporter object-এর সাথে reporterNewsLength যোগ করা
+  const resultWithNewsCount = result.map((reporter) => {
+    const reporterObj = reporter.toObject();
+    return {
+      ...reporterObj,
+      reporterNewsLength: countMap.get(reporter._id.toString()) || 0,
+    };
+  });
+
+  return resultWithNewsCount;
 };
 
 const getSingleReporterUsingUserIdFromBD = async (userId: string) => {
@@ -41,9 +74,7 @@ const getSingleReporterUsingUserIdFromBD = async (userId: string) => {
 };
 
 const getSingleReporterUsingReporterId = async (reporterId: string) => {
-  const result = await Reporter.findOne({
-    id: reporterId,
-  }).populate("news");
+  const result = await Reporter.findById(reporterId);
 
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, "Reporter is not Exist");

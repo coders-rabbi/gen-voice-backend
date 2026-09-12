@@ -28,11 +28,12 @@ const getAllReporterController = catchAsync(
 );
 
 const getSingleReporterUsingReportIdController = catchAsync(
-  async (req, res, next) => {
+  async (req, res) => {
     const { reporterId } = req.params;
     const result = await ReporterServices.getSingleReporterUsingReporterId(
       reporterId as string,
     );
+
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,

@@ -22,6 +22,7 @@ export type TReporter = {
   isActive?: "active" | "blocked" | "suspended" | "pending" | "rejected";
   createdAt?: Date;
   updatedAt?: Date;
+  reporterNewsLength?: number;
 };
 
 //Static Methods

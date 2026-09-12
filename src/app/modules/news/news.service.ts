@@ -180,7 +180,20 @@ const getSingleReporterNewsFromDB = async (
 
 const getNewsByReporterId = async (repId: string) => {
   if (!repId) return null;
-  const response = await News.find({ reporterId: repId });
+  const response = await News.find({ reporterId: repId }).populate([
+    {
+      path: "reporterId",
+      select: "name id",
+    },
+    {
+      path: "approvedBy",
+      select: "role email",
+    },
+    {
+      path: "categoryId",
+      select: "categoryName",
+    },
+  ]);
   return response;
 };
 
@@ -189,8 +202,22 @@ const getSingleNewsFromDB = async (id: string) => {
   return result;
 };
 
-const getNewsByCategoryIDFromBD = async (categoryId: string) => {
-  const response = await News.find({ categoryId: categoryId });
+const getNewsByCategoryIDFromDB = async (categoryId: string) => {
+  const response = await News.find({ categoryId: categoryId }).populate([
+    {
+      path: "reporterId",
+      select: "name id",
+    },
+    {
+      path: "approvedBy",
+      select: "role email",
+    },
+    {
+      path: "categoryId",
+      select: "categoryName",
+    },
+  ]);
+
   return response;
 };
 
@@ -229,14 +256,55 @@ const getHomePageNewsFromDB = async () => {
             { $match: { "category.categoryName": catName } },
             { $sort: { publishAt: -1 } },
             { $limit: LIMIT_PER_CATEGORY },
+
             {
-              $project: {
-                title: 1,
-                shortDetails: 1,
-                featuredImageUrl: 1,
-                slug: 1,
-                publishAt: 1,
-                reporterId: 1,
+              $lookup: {
+                from: "reporters",
+                localField: "reporterId",
+                foreignField: "_id",
+                as: "reporterId",
+                pipeline: [
+                  {
+                    $addFields: {
+                      fullName: {
+                        $trim: {
+                          input: {
+                            $concat: [
+                              "$name.firstName",
+                              " ",
+                              { $ifNull: ["$name.middleName", ""] },
+                              " ",
+                              "$name.lastName",
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  },
+                  { $project: { id: 1, fullName: 1 } },
+                ],
+              },
+            },
+            {
+              $unwind: {
+                path: "$reporterId",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+
+            {
+              $lookup: {
+                from: "users",
+                localField: "approvedBy",
+                foreignField: "_id",
+                as: "approvedBy",
+                pipeline: [{ $project: { role: 1, email: 1 } }],
+              },
+            },
+            {
+              $unwind: {
+                path: "$approvedBy",
+                preserveNullAndEmptyArrays: true,
               },
             },
           ];
@@ -393,7 +461,7 @@ export const NewsServices = {
   getSingleReporterNewsFromDB,
   getNewsByReporterId,
   getHomePageNewsFromDB,
-  getNewsByCategoryIDFromBD,
+  getNewsByCategoryIDFromDB,
   getSingleNewsFromDB,
   updateNewsStatus,
   updateNewsIntoDB,

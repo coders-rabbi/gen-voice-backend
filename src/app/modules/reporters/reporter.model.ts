@@ -74,6 +74,9 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
     toJSON: {
       virtuals: true,
     },
+    toObject: {
+      virtuals: true,
+    },
   },
 );
 
@@ -85,9 +88,12 @@ ReporterSchema.statics.isReporterExists = async function (id: string) {
 
 // fullName virtual
 ReporterSchema.virtual("fullName").get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+  return [this.name.firstName, this.name.middleName, this.name.lastName]
+    .filter(Boolean)
+    .join(" ");
 });
 
+// news virtual (populate করলে reporter এর সব news পাওয়া যাবে)
 ReporterSchema.virtual("news", {
   ref: "News",
   localField: "_id",

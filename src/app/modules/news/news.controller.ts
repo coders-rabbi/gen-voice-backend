@@ -102,7 +102,7 @@ const getSingleNewsController = catchAsync(
 
 const getNewsByCategoryIDController = catchAsync(async (req, res) => {
   const { categoryId } = req.params;
-  const response = await NewsServices.getNewsByCategoryIDFromBD(
+  const response = await NewsServices.getNewsByCategoryIDFromDB(
     categoryId as string,
   );
 
