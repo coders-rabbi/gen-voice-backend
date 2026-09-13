@@ -453,6 +453,19 @@ const incrementNewsViewInDB = async (newsId: string) => {
   return result;
 };
 
+const getNewsTotalViewsFromDB = async () => {
+  const result = await News.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalViews: { $sum: "$views" },
+      },
+    },
+  ]);
+
+  return result[0]?.totalViews || 0;
+};
+
 export const NewsServices = {
   createNewsIntoDB,
   getAllNewsFromDB,
@@ -467,4 +480,5 @@ export const NewsServices = {
   getMonthlyPostCountFromDB,
   incrementNewsViewInDB,
   getPopularNewsFromBD,
+  getNewsTotalViewsFromDB,
 };

@@ -11,24 +11,29 @@ const router = express.Router();
 router.post(
   "/create_news",
   authValidation(USER_ROLE?.REPORTER),
-  // valiadateRequest(newsValidations.createNewsValidationSchema),
   NewsControllers.createNewsController,
 );
+
+// ✅ Shob static routes age
 router.get("/", NewsControllers.getAllNewsController);
 router.get("/video-news", NewsControllers.getAllVideNewsController);
 router.get("/homecategory", NewsControllers.getHomePageNewsController);
+router.get("/total-views", NewsControllers.newsTotalViewController);
+router.get("/popular-news", NewsControllers.pupularNewsController);
+
+// ✅ Dynamic :param routes pore
 router.get(
   "/:reporterNews",
   authValidation(USER_ROLE.REPORTER),
   NewsControllers.getSingleReporterNewsController,
 );
-router.get("/popular-news", NewsControllers.pupularNewsController);
 router.get("/:id", NewsControllers.getSingleNewsController);
 router.get("/:repId/news", NewsControllers.getNewsByReporterId);
 router.get(
   "/:categoryId/category",
   NewsControllers.getNewsByCategoryIDController,
 );
+
 router.patch(
   "/:newsId",
   authValidation(

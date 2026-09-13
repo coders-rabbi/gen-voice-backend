@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendreponse";
 import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 import { News } from "./news.model";
+import { success } from "zod";
 
 const createNewsController = catchAsync(async (req, res) => {
   // const authenticatedUserId = req.user?.id ?? req.user?._id;
@@ -180,6 +181,17 @@ const pupularNewsController = catchAsync(async (req, res) => {
   });
 });
 
+const newsTotalViewController = catchAsync(async (req, res) => {
+  const response = await NewsServices.getNewsTotalViewsFromDB();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Get all views total count!",
+    data: response,
+  });
+});
+
 export const NewsControllers = {
   createNewsController,
   getAllNewsController,
@@ -194,4 +206,5 @@ export const NewsControllers = {
   getMonthlyPostCountController,
   incrementNewsViewController,
   pupularNewsController,
+  newsTotalViewController,
 };

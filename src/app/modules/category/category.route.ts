@@ -3,7 +3,6 @@ import { CategoriesController } from "./category.controllet";
 import validateRequest from "../../middleware/validateRequest";
 import { CategoryValidation } from "./category.validation";
 import authValidation from "../../middleware/authValidation";
-import { USER_ROLE } from "../users/user.constant";
 import { ADMIN_ROLE } from "../admin/admin.constant";
 const router = express.Router();
 
