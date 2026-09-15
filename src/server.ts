@@ -5,15 +5,12 @@ import { initSocket } from "./app/socket";
 
 const server = http.createServer(app);
 
-// socket.io ke http server-er sathe attach kora
 initSocket(server);
 
-if (process.env.NODE_ENV !== "production") {
-  const PORT = config.port || 5000;
-  server.listen(PORT, () => {
-    console.log(`GenVoice app listening on port ${PORT}`);
-  });
-}
+const PORT = config.port || 5000;
+server.listen(PORT, () => {
+  console.log(`GenVoice app listening on port ${PORT}`);
+});
 
 process.on("unhandledRejection", () => {
   console.log("Unhandled rejection detected, shutting down...");
