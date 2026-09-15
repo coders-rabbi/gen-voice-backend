@@ -17,7 +17,7 @@ app.use(cors());
 const allowedOrigins = [
   "http://localhost:3000",
   "https://www.genvoice.news",
-  "https://gen-voice.codersrabbi.workers.dev",
+  "https://83575ff8-gen-voice.codersrabbi.workers.dev",
 ];
 
 app.use(
