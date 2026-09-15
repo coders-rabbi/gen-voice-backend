@@ -11,6 +11,7 @@ export default {
   jwt_refresh_token: process.env.JWT_REFRESH_SECRET,
   jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
   jwt_access_expires_in: process.env.JWT_ACCESS_EXPIRES_IN,
+  client_url: process.env.CLIENT_URL,
 };
 
 dotenv.config({ path: path.join(process.cwd(), ".env") });

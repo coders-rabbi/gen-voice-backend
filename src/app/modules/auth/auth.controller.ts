@@ -24,7 +24,6 @@ const loginUserController = catchAsync(async (req, res) => {
 
 const adminLoginController = catchAsync(async (req, res) => {
   const result = await AuthService.adminLogin(req.body);
-  console.log(result);
 
   const { adminRefreshToken, adminAccessToken } = result;
   res.cookie("adminRefreshToken", adminRefreshToken, {

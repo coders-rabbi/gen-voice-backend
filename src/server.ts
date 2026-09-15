@@ -1,9 +1,16 @@
+import http from "http";
 import { app } from "./app";
 import config from "./app/config";
+import { initSocket } from "./app/socket";
+
+const server = http.createServer(app);
+
+// socket.io ke http server-er sathe attach kora
+initSocket(server);
 
 if (process.env.NODE_ENV !== "production") {
   const PORT = config.port || 5000;
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`GenVoice app listening on port ${PORT}`);
   });
 }

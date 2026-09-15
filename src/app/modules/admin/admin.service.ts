@@ -11,16 +11,20 @@ const getAdminfromBD = async () => {
   return response;
 };
 
-const updateAdminInfoFromDB = async (id: string, payload: Partial<TAdmin>) => {
-  const response = await Admin.findByIdAndUpdate(
-    id,
-    { adminName: payload.adminName },
-    { returnDocument: "after", runValidators: true },
-  );
+const getSingleAdminUserFromDB = async (id: string) => {
+  const response = await Admin.findById(id);
   return response;
 };
 
-const deleteAdminUserFromBD = async (id: string) => {
+const updateAdminInfoFromDB = async (id: string, payload: Partial<TAdmin>) => {
+  const response = await Admin.findByIdAndUpdate(id, payload, {
+    returnDocument: "after",
+    runValidators: true,
+  });
+  return response;
+};
+
+const deleteAdminUserFromDB = async (id: string) => {
   const response = await Admin.findByIdAndDelete(id, {
     isDeleted: true,
   });
@@ -28,8 +32,9 @@ const deleteAdminUserFromBD = async (id: string) => {
 };
 
 export const adminService = {
+  getSingleAdminUserFromDB,
   updateAdminInfoFromDB,
-  deleteAdminUserFromBD,
+  deleteAdminUserFromDB,
   createAdminIntoBd,
   getAdminfromBD,
 };

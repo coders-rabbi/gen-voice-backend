@@ -19,6 +19,8 @@ router.get(
   authValidation(ADMIN_ROLE.SUPER_ADMIN),
   adminController.getAdminController,
 );
+
+router.get("/:id", adminController.getSingleAdminUser)
 router.patch(
   "/:id",
   authValidation(ADMIN_ROLE.ADMIN, ADMIN_ROLE.EDITOR, ADMIN_ROLE.SUPER_ADMIN),
@@ -26,7 +28,7 @@ router.patch(
 );
 
 router.patch(
-  "/id/delete",
+  "/:id/delete",
   authValidation(ADMIN_ROLE.SUPER_ADMIN),
   adminController.deleteAdminUserController,
 );

@@ -58,7 +58,6 @@ const loginUser = async (payload: TLoginUser) => {
 };
 
 const adminLogin = async (payload: TLoginUser) => {
-  console.log("CONFIG CHECK:", config);
   const isUserExist = await Admin.findOne({ email: payload?.email }).select(
     "+password",
   );
