@@ -17,6 +17,7 @@ export type TReporter = {
   presentAddress: string;
   permanentAddress: string;
   profileImage?: string;
+  coverImage?: string;
   designation: string;
   facebook?: string;
   isActive?: "active" | "blocked" | "suspended" | "pending" | "rejected";

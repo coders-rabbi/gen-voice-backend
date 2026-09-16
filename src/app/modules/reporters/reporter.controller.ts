@@ -59,14 +59,14 @@ const getSingleReporterUsingUserIdController = catchAsync(async (req, res) => {
 const updateSingleReporterController = catchAsync(async (req, res) => {
   const { reporterId } = req.params;
   const updatedData = req.body;
-  const result = await ReporterServices.updateSingleReporterInfoFromDB(
+  const response = await ReporterServices.updateSingleReporterInfoFromDB(
     reporterId as string,
     updatedData,
   );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    data: result,
+    data: response,
   });
 });
 

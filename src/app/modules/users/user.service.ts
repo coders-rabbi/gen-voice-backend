@@ -66,8 +66,7 @@ const getAllUsersFromDB = async () => {
 };
 
 const getSingleUserFromDB = async (id: string) => {
-  // const result = await User.findOne({ _id: id });
-  const result = await User.aggregate([{ $match: { _id: id } }]);
+  const result = await User.findById(id);
   return result;
 };
 

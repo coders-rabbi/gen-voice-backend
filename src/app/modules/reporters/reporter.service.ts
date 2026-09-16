@@ -88,20 +88,33 @@ const updateSingleReporterInfoFromDB = async (
 ) => {
   const { name, ...remainingReporterData } = payload || {};
 
-  const updatedReporterData: Record<string, unknown> = {
-    ...remainingReporterData,
-  };
+  const updatedReporterData: Record<string, unknown> = {};
 
-  if (name && typeof name === "object" && !Array.isArray(name)) {
-    for (const [key, value] of Object.entries(name)) {
-      updatedReporterData[`name.${key}`] = value;
+  // only keep top-level fields that have a real value
+  for (const [key, value] of Object.entries(remainingReporterData)) {
+    if (value !== undefined && value !== null && value !== "") {
+      updatedReporterData[key] = value;
     }
   }
-  const result = await Reporter.findOneAndUpdate(
-    { id },
+
+  // only keep nested "name" fields that have a real value
+  if (name && typeof name === "object" && !Array.isArray(name)) {
+    for (const [key, value] of Object.entries(name)) {
+      if (value !== undefined && value !== null && value !== "") {
+        updatedReporterData[`name.${key}`] = value;
+      }
+    }
+  }
+
+  if (Object.keys(updatedReporterData).length === 0) {
+    return await Reporter.findById(id);
+  }
+
+  const result = await Reporter.findByIdAndUpdate(
+    id, // MongoDB _id
     { $set: updatedReporterData },
     {
-      returnDocument: "after",
+      new: true, // updated document ফেরত পাবেন
       runValidators: true,
     },
   );

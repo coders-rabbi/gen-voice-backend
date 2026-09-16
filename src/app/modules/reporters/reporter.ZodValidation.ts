@@ -31,6 +31,7 @@ export const ReporterValidationSchema = z.object({
     permanentAddress: z.string().trim().min(5, "Permanent address is required"),
 
     profileImage: z.url("Profile image must be a valid URL").optional(),
+    coverImage: z.url("Profile image must be a valid URL").optional(),
 
     designation: z.string().trim().min(4, "Designation is required"),
 
@@ -79,6 +80,10 @@ export const updateReporterValidationSchema = z.object({
       .optional(),
 
     profileImage: z
+      .string()
+      .url("Profile image must be a valid URL")
+      .optional(),
+    coverImage: z
       .string()
       .url("Profile image must be a valid URL")
       .optional(),

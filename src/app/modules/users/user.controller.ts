@@ -41,12 +41,12 @@ const getAllUserController = catchAsync(async (req, res) => {
 
 const getSingleUserController = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await UserServices.getSingleUserFromDB(id as string);
+  const response = await UserServices.getSingleUserFromDB(id as string);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "User successfully retrive from the database",
-    data: result,
+    data: response,
   });
 });
 

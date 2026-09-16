@@ -55,6 +55,9 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
     profileImage: {
       type: String,
     },
+    coverImage: {
+      type: String,
+    },
     designation: {
       type: String,
       required: true,
