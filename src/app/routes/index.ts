@@ -11,6 +11,7 @@ import { CommentRouter } from "../modules/comment/comment.route";
 import { ReactionRoutes } from "../modules/reactions/reaction.route";
 import { webAboutRouters } from "../modules/web-about-page/about.route";
 import { webContacts } from "../modules/web-contact/contact.route";
+import { followRoutes } from "../modules/follower/follower.route";
 
 const router = Router();
 
@@ -62,6 +63,10 @@ const modulesRoutes = [
   {
     path: "/web-contact",
     route: webContacts,
+  },
+  {
+    path: "/follow",
+    route: followRoutes,
   },
 ];
 
