@@ -68,8 +68,24 @@ const getMyReaction = catchAsync(async (req, res) => {
   });
 });
 
+const getReporterRating = catchAsync(async (req, res) => {
+  const { reporterId } = req.params;
+
+  const result = await ReactionServices.getReporterReactionCounts(
+    reporterId as string,
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Reporter reaction counts retrieved successfully",
+    data: result,
+  });
+});
+
 export const ReactionControllers = {
   toggleReaction,
   getReactionCounts,
   getMyReaction,
+  getReporterRating,
 };

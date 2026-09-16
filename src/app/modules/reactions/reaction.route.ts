@@ -21,5 +21,6 @@ router.get(
   authValidation(USER_ROLE.REPORTER, USER_ROLE.VIEWER),
   ReactionControllers.getMyReaction,
 );
+router.get("/reporter/:reporterId", ReactionControllers.getReporterRating);
 
 export const ReactionRoutes = router;

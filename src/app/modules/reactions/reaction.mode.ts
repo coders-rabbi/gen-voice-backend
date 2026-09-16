@@ -7,6 +7,11 @@ const ReactionSchema = new Schema<TReaction>(
       type: String,
       required: true,
     },
+    reporterId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -22,5 +27,6 @@ const ReactionSchema = new Schema<TReaction>(
 );
 
 ReactionSchema.index({ newsId: 1, userId: 1 }, { unique: true });
+ReactionSchema.index({ reporterId: 1, type: 1 }); // 👈 rating query fast করার জন্য
 
 export const Reaction = model<TReaction>("Reaction", ReactionSchema);
