@@ -14,7 +14,6 @@ router.post(
   NewsControllers.createNewsController,
 );
 
-// ✅ Shob static routes age
 router.get("/", NewsControllers.getAllNewsController);
 router.get("/video-news", NewsControllers.getAllVideNewsController);
 router.get("/homecategory", NewsControllers.getHomePageNewsController);
@@ -27,7 +26,7 @@ router.get(
   authValidation(USER_ROLE.REPORTER),
   NewsControllers.getSingleReporterNewsController,
 );
-router.get("/:id", NewsControllers.getSingleNewsController);
+router.get("/:newsId/single", NewsControllers.getSingleNewsController);
 router.get("/:repId/news", NewsControllers.getNewsByReporterId);
 router.get(
   "/:categoryId/category",

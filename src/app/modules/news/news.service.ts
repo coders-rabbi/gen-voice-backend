@@ -196,8 +196,8 @@ const getNewsByReporterId = async (repId: string) => {
   return response;
 };
 
-const getSingleNewsFromDB = async (id: string) => {
-  const result = await News.findById(id); // ✅ সঠিক
+const getSingleNewsFromDB = async (newsId: string) => {
+  const result = await News.findOne({ newsId: newsId });
   return result;
 };
 
@@ -280,7 +280,7 @@ const getHomePageNewsFromDB = async () => {
                       },
                     },
                   },
-                  { $project: { id: 1, fullName: 1 } },
+                  { $project: { id: 1, fullName: 1, profileImage: 1 } },
                 ],
               },
             },
@@ -319,16 +319,16 @@ const getHomePageNewsFromDB = async () => {
 };
 
 const updateNewsIntoDB = async (id: string, payload: Partial<TNews>) => {
-  const isNewsExist = await News.findOne({ newsId: id });
-  if (!isNewsExist) {
-    throw new AppError(StatusCodes.NOT_FOUND, "News is not found");
-  }
-
   const result = await News.findOneAndUpdate(
     { newsId: id },
     { $set: payload },
-    { returnDocument: "after" },
+    { new: true, runValidators: true, context: "query" },
   );
+
+  if (!result) {
+    throw new AppError(StatusCodes.NOT_FOUND, "News is not found");
+  }
+
   return result;
 };
 

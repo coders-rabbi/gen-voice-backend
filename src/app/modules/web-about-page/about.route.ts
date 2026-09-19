@@ -12,5 +12,6 @@ router.post(
 );
 
 router.get("/", aboutControllers.getWebAboutController);
+router.patch("/update-web-about", aboutControllers.updateWebAboutController);
 
 export const webAboutRouters = router;

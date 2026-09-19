@@ -88,18 +88,17 @@ const getHomePageNewsController = catchAsync(async (req, res) => {
   });
 });
 
-const getSingleNewsController = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
+const getSingleNewsController = catchAsync(async (req, res) => {
+  const { newsId } = req.params;
+  console.log(newsId);
 
-    const result = await NewsServices.getSingleNewsFromDB(id as string);
-    res.status(200).json({
-      success: true,
-      message: "Succesfully retrive a news from the database",
-      data: result,
-    });
-  },
-);
+  const result = await NewsServices.getSingleNewsFromDB(newsId as string);
+  res.status(200).json({
+    success: true,
+    message: "Succesfully retrive a news from the database",
+    data: result,
+  });
+});
 
 const getNewsByCategoryIDController = catchAsync(async (req, res) => {
   const { categoryId } = req.params;

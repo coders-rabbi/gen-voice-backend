@@ -25,8 +25,21 @@ const getWebAboutController = catchAsync(async (req, res) => {
     data: response,
   });
 });
+const updateWebAboutController = catchAsync(async (req, res) => {
+  const payload = req.body;
+  console.log(payload)
+  const response = await aboutServices.updateWebAboutInfoFromDB(payload);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "About info updated successfully",
+    data: response,
+  });
+});
 
 export const aboutControllers = {
   createAboutController,
   getWebAboutController,
+  updateWebAboutController,
 };

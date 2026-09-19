@@ -12,6 +12,7 @@ import { ReactionRoutes } from "../modules/reactions/reaction.route";
 import { webAboutRouters } from "../modules/web-about-page/about.route";
 import { webContacts } from "../modules/web-contact/contact.route";
 import { followRoutes } from "../modules/follower/follower.route";
+import { pollRouters } from "../modules/poll/poll.route";
 
 const router = Router();
 
@@ -55,6 +56,10 @@ const modulesRoutes = [
   {
     path: "/reactions",
     route: ReactionRoutes,
+  },
+  {
+    path: "/polls",
+    route: pollRouters,
   },
   {
     path: "/web-about-info",
