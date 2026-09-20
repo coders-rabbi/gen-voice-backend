@@ -37,12 +37,27 @@ const getSinglePollController = catchAsync(async (req, res) => {
 
 const updateSinglePollController = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const payload = req.body
-  const response = await pollServices.updateSinglePollIntoDB(id as string, payload);
+  const payload = req.body;
+  const response = await pollServices.updateSinglePollIntoDB(
+    id as string,
+    payload,
+  );
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
     message: "Poll update successfully",
+    data: response,
+  });
+});
+
+const deletePollController = catchAsync(async (req, res) => {
+  const { pollId } = req.params; // ✅ route এর param name এর সাথে মিলিয়ে
+  const response = await pollServices.deletePollFromDB(pollId as string);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Poll deleted successfully",
     data: response,
   });
 });
@@ -52,4 +67,5 @@ export const pollControllers = {
   getAllPollController,
   getSinglePollController,
   updateSinglePollController,
+  deletePollController,
 };

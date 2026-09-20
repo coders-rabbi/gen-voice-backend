@@ -7,7 +7,9 @@ const createPollIntoDB = async (payload: IPoll) => {
 };
 
 const getAllPollFromDB = async () => {
-  const response = await Poll.find().sort("-createdAt");
+  const response = await Poll.find({ isDeleted: { $ne: true } }).sort(
+    "-createdAt",
+  );
   return response;
 };
 
@@ -23,9 +25,15 @@ const updateSinglePollIntoDB = async (id: string, payload: IPoll) => {
   return response;
 };
 
+const deletePollFromDB = async (id: string) => {
+  const response = await Poll.findByIdAndUpdate(id, { isDeleted: true });
+  return response;
+};
+
 export const pollServices = {
   createPollIntoDB,
   getAllPollFromDB,
   getSinglePollFromDB,
   updateSinglePollIntoDB,
+  deletePollFromDB,
 };
