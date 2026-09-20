@@ -7,7 +7,7 @@ const createPollIntoDB = async (payload: IPoll) => {
 };
 
 const getAllPollFromDB = async () => {
-  const response = await Poll.find();
+  const response = await Poll.find().sort("-createdAt");
   return response;
 };
 

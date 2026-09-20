@@ -40,7 +40,9 @@ export interface IPoll extends Document {
   visibility: Visibility;
   category: Category;
   questions: IQuestion[];
+  votes: number,
   createdBy?: Types.ObjectId;
+  isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

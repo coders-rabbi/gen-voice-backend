@@ -32,7 +32,9 @@ const PollSchema = new Schema<IPoll>(
       default: "Politics",
     },
     questions: { type: [QuestionSchema], default: [] },
+    votes: { type: Number, default: 0 }, // 👈 fix
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
