@@ -5,15 +5,9 @@ import sendResponse from "../../utils/sendreponse";
 
 const trackVisitController = catchAsync(async (req, res) => {
   const { path } = req.body;
-  const user = req.user;
   const userId = req.user?._id;
 
-
-  console.log("Track visit called:", { path, userId, user }); // 👈 এটা বসান
-
-  const visit = await visitServices.trackVisit(userId?._id, path);
-
-  console.log("Visit created:", visit); // 👈 এটাও
+  const visit = await visitServices.trackVisit(userId, path);
 
   sendResponse(res, {
     success: true,
