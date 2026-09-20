@@ -14,6 +14,7 @@ import { webContacts } from "../modules/web-contact/contact.route";
 import { followRoutes } from "../modules/follower/follower.route";
 import { pollRouters } from "../modules/poll/poll.route";
 import { pollResponseRouters } from "../modules/poll-response/poll-response.route";
+import { visitRouters } from "../modules/visitor/visit.route";
 
 const router = Router();
 
@@ -65,6 +66,10 @@ const modulesRoutes = [
   {
     path: "/poll-response",
     route: pollResponseRouters,
+  },
+  {
+    path: "/traffic",
+    route: visitRouters,
   },
   {
     path: "/web-about-info",
