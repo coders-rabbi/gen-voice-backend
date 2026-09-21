@@ -6,7 +6,7 @@ import sendResponse from "../../utils/sendreponse";
 const submitPollResponseController = catchAsync(async (req, res) => {
   const { id: pollId } = req.params;
   const { answers } = req.body;
-  const respondentId = req.user?._id; // auth middleware optional চালু থাকলে
+  const respondentId = req.user?._id;
 
   const response = await pollResponseServices.submitPollResponse(
     pollId as string,
@@ -24,7 +24,9 @@ const submitPollResponseController = catchAsync(async (req, res) => {
 
 const getPollAnalyticsController = catchAsync(async (req, res) => {
   const { id: pollId } = req.params;
-  const response = await pollResponseServices.getPollAnalytics(pollId as string);
+  const response = await pollResponseServices.getPollAnalytics(
+    pollId as string,
+  );
 
   sendResponse(res, {
     success: true,

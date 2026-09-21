@@ -12,6 +12,7 @@ const submitPollResponse = async (
   answers: IAnswer[],
   respondentId?: string,
 ) => {
+  
   const response = await PollResponse.create({
     pollId,
     answers,
