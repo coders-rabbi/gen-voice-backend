@@ -2,12 +2,14 @@ import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 import { visitServices } from "./visit.service";
 import sendResponse from "../../utils/sendreponse";
+import { getTrafficSource } from "../../utils/getTrafficSource";
 
 const trackVisitController = catchAsync(async (req, res) => {
-  const { path } = req.body;
+  const { path, referrer } = req.body;
   const userId = req.user?._id;
+  const source = getTrafficSource(referrer);
 
-  const visit = await visitServices.trackVisit(userId, path);
+  const visit = await visitServices.trackVisit(userId, path, source);
 
   sendResponse(res, {
     success: true,

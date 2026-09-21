@@ -5,11 +5,14 @@ const VisitSchema = new Schema<IVisit>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User" },
     path: { type: String },
+    source: {
+      type: String,
+      default: "direct",
+    },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );
 
-// aggregation query দ্রুত করার জন্য index
 VisitSchema.index({ createdAt: 1 });
 VisitSchema.index({ userId: 1 });
 
