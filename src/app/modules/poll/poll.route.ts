@@ -10,4 +10,3 @@ router.patch("/:id", pollControllers.updateSinglePollController);
 router.patch("/:pollId/delete", pollControllers.deletePollController);
 
 export const pollRouters = router;
-    

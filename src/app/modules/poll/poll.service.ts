@@ -18,9 +18,10 @@ const getSinglePollFromDB = async (id: string) => {
   return response;
 };
 
-const updateSinglePollIntoDB = async (id: string, payload: IPoll) => {
-  const response = await Poll.findByIdAndUpdate(id, {
-    payload,
+const updateSinglePollIntoDB = async (id: string, payload: Partial<IPoll>) => {
+  const response = await Poll.findByIdAndUpdate(id, payload, {
+    returnDocument: "after",
+    runValidators: true,
   });
   return response;
 };
