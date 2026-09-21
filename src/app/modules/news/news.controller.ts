@@ -7,7 +7,6 @@ import { News } from "./news.model";
 import { success } from "zod";
 
 const createNewsController = catchAsync(async (req, res) => {
-  // const authenticatedUserId = req.user?.id ?? req.user?._id;
   const authenticatedUserId = req.headers.authorization;
 
   if (!authenticatedUserId) {
@@ -191,7 +190,19 @@ const newsTotalViewController = catchAsync(async (req, res) => {
   });
 });
 
+
+const bothContentcontroller = catchAsync(async (req, res) => {
+
+  const result = await NewsServices.getBothContent();
+  res.status(200).json({
+    success: true,
+    message: "Succesfully retrive a news from the database",
+    data: result,
+  });
+});
+
 export const NewsControllers = {
+  bothContentcontroller,
   createNewsController,
   getAllNewsController,
   getAllVideNewsController,

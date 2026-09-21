@@ -466,7 +466,25 @@ const getNewsTotalViewsFromDB = async () => {
   return result[0]?.totalViews || 0;
 };
 
+const getBothContent = async () => {
+  const result = await News.find().populate([
+    {
+      path: "reporterId",
+      select: "name id",
+    },
+    {
+      path: "approvedBy",
+      select: "role email",
+    },
+    {
+      path: "categoryId",
+      select: "categoryName",
+    },
+  ]);
+  return result;
+};
 export const NewsServices = {
+  getBothContent,
   createNewsIntoDB,
   getAllNewsFromDB,
   getAllVideoNewsFromDB,

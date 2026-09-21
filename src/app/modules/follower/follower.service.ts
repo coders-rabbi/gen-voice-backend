@@ -32,6 +32,12 @@ const getFollowerCountFromDB = async (reporterId: string) => {
   return count;
 };
 
+
+const getFollowingCountFromDB = async (followerId: string) => {
+  const count = await Follow.countDocuments({ follower: followerId });
+  return count;
+};
+
 const checkIsFollowingFromDB = async (
   followerId: string,
   reporterId: string,
@@ -44,6 +50,7 @@ const checkIsFollowingFromDB = async (
 };
 
 export const followServices = {
+  getFollowingCountFromDB,
   followReporterIntoDB,
   unfollowReporterFromDB,
   getReporterFollowersFromDB,

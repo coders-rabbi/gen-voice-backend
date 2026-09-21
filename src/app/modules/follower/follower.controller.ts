@@ -20,6 +20,18 @@ const followReporterController = catchAsync(async (req, res) => {
   });
 });
 
+const getFollowingCountController = catchAsync(async (req, res) => {
+  const followerId = req?.user?._id;
+
+  const count = await followServices.getFollowingCountFromDB(followerId);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Following count retrieved",
+    data: { count },
+  });
+});
+
 const unfollowReporterController = catchAsync(async (req, res) => {
   const followerId = req?.user?._id;
   const { reporterId } = req.params;
@@ -71,6 +83,7 @@ const checkIsFollowingController = catchAsync(async (req, res) => {
   const followerId = req?.user?._id;
   const { reporterId } = req.params;
 
+
   const isFollowing = await followServices.checkIsFollowingFromDB(
     followerId,
     reporterId as string,
@@ -88,6 +101,7 @@ export const followControllers = {
   followReporterController,
   unfollowReporterController,
   getReporterFollowersController,
+  getFollowingCountController, // 👈 নতুন
   getFollowerCountController,
   checkIsFollowingController,
 };

@@ -14,6 +14,8 @@ router.post(
   NewsControllers.createNewsController,
 );
 
+router.get("/both-content", NewsControllers.bothContentcontroller);
+
 router.get("/", NewsControllers.getAllNewsController);
 router.get("/video-news", NewsControllers.getAllVideNewsController);
 router.get("/homecategory", NewsControllers.getHomePageNewsController);
