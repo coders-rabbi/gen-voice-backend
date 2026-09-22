@@ -9,7 +9,7 @@ export type TUser = {
   passwordChangeAt?: Date;
   role: TUserRole;
   isDeleted: boolean;
-  isActive?: "active" | "blocked";
+  isActive?: "active" | "blocked" | "pending";
   comparePassword(candidate: string): Promise<boolean>;
 };
 

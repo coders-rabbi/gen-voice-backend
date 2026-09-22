@@ -16,6 +16,12 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(StatusCodes.NOT_FOUND, "This user is not found!");
   }
 
+  
+  // const isPending = isUserExist?.isActive;
+  // if (isPending === "pending") {
+  //   throw new AppError(StatusCodes.FORBIDDEN, "This user is pending! Need to approval by admin");
+  // }
+
   const isDeleted = isUserExist?.isDeleted;
   if (isDeleted) {
     throw new AppError(StatusCodes.FORBIDDEN, "This user is deleted!");
