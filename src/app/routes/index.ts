@@ -15,6 +15,7 @@ import { followRoutes } from "../modules/follower/follower.route";
 import { pollRouters } from "../modules/poll/poll.route";
 import { pollResponseRouters } from "../modules/poll-response/poll-response.route";
 import { visitRouters } from "../modules/visitor/visit.route";
+import { SavedNewsRoutes } from "../modules/save-news/saveNews.route";
 
 const router = Router();
 
@@ -83,6 +84,10 @@ const modulesRoutes = [
     path: "/follow",
     route: followRoutes,
   },
+  {
+    path: "/saved-news",
+    route: SavedNewsRoutes
+  }
 ];
 
 modulesRoutes.forEach((route) => router.use(route.path, route.route));
