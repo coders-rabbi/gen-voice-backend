@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 const ReporterNameValidationSchema = z.object({
-  firstName: z.string().trim().min(4, "First name is required"),
+  firstName: z.string().trim().min(1, "First name is required"),
   middleName: z.string().trim().optional(),
-  lastName: z.string().trim().min(3, "Last name is required"),
+  lastName: z.string().trim().min(1, "Last name is required"),
 });
 
 export const ReporterValidationSchema = z.object({
