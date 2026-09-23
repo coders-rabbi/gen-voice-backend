@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 import { TCategory } from "./category.interface";
 import AppError from "../../error/AppError";
 import { StatusCodes } from "http-status-codes";
+import { number } from "zod";
 
 const CategorySchema = new Schema<TCategory>(
   {
@@ -18,7 +19,6 @@ const CategorySchema = new Schema<TCategory>(
     },
     image: {
       type: String,
-      required: true,
     },
     description: {
       type: String,
@@ -33,6 +33,10 @@ const CategorySchema = new Schema<TCategory>(
       type: Boolean,
       default: false,
       required: true,
+    },
+    newsCount: {
+      type: Number,
+      default: 0,
     },
   },
   {
@@ -55,7 +59,7 @@ CategorySchema.pre("save", async function () {
   }
 });
 
-CategorySchema.pre("find", function () {
+CategorySchema.pre(["find", "findOne"], function () {
   this.find({ isDeleted: { $ne: true } });
 });
 

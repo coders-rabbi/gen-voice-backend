@@ -21,7 +21,6 @@ const createNewsController = catchAsync(async (req, res) => {
   const newsData = req.body;
   const result = await NewsServices.createNewsIntoDB(
     newsData,
-    authenticatedUserId,
   );
 
   sendResponse(res, {
@@ -179,6 +178,17 @@ const pupularNewsController = catchAsync(async (req, res) => {
   });
 });
 
+const recentNewsController = catchAsync(async (req, res) => {
+  const response = await NewsServices.getRecentNewsFromDB(req.query);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Recent news retrive done",
+    data: response,
+  });
+});
+
 const newsTotalViewController = catchAsync(async (req, res) => {
   const response = await NewsServices.getNewsTotalViewsFromDB();
 
@@ -190,14 +200,24 @@ const newsTotalViewController = catchAsync(async (req, res) => {
   });
 });
 
-
 const bothContentcontroller = catchAsync(async (req, res) => {
-
   const result = await NewsServices.getBothContent();
   res.status(200).json({
     success: true,
     message: "Succesfully retrive a news from the database",
     data: result,
+  });
+});
+
+
+const featuredNewsController = catchAsync(async (req, res) => {
+  const response = await NewsServices.getFeaturedNews();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Featured news retrive done",
+    data: response,
   });
 });
 
@@ -216,5 +236,7 @@ export const NewsControllers = {
   getMonthlyPostCountController,
   incrementNewsViewController,
   pupularNewsController,
+  recentNewsController,
+  featuredNewsController,
   newsTotalViewController,
 };

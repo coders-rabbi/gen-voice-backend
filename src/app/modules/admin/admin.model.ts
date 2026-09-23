@@ -17,6 +17,10 @@ const AdminSchema = new Schema<TAdmin>(
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
     },
+    profileImage: {
+      type: String,
+      default: ""
+    },
     password: { type: String, required: true, select: false },
     passwordChangeAt: { type: Date },
     role: {

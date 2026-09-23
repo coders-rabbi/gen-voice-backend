@@ -13,6 +13,7 @@ const createAdminValidationSchema = z.object({
       .email("Invalid email format")
       .trim()
       .toLowerCase(),
+    profileImage: z.string().optional(),
     password: z
       .string({ message: "Password is required" })
       .min(6, "Password must be at least 6 characters"),

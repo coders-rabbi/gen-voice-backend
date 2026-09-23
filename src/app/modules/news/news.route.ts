@@ -21,6 +21,8 @@ router.get("/video-news", NewsControllers.getAllVideNewsController);
 router.get("/homecategory", NewsControllers.getHomePageNewsController);
 router.get("/total-views", NewsControllers.newsTotalViewController);
 router.get("/popular-news", NewsControllers.pupularNewsController);
+router.get("/recent-news", NewsControllers.recentNewsController);
+router.get("/featured-news", NewsControllers.featuredNewsController);
 
 // ✅ Dynamic :param routes pore
 router.get(

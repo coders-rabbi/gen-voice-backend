@@ -6,6 +6,7 @@ export type TAdminRole = (typeof ADMIN_ROLE)[keyof typeof ADMIN_ROLE];
 export type TAdmin = {
   adminName: string;
   email: string;
+  profileImage: string;
   password: string;
   passwordChangeAt?: Date;
   role: TAdminRole;

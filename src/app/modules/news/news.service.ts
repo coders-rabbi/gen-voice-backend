@@ -8,12 +8,9 @@ import { Reporter } from "../reporters/reporter.model";
 import { Types } from "mongoose";
 import { commentServices } from "../comment/comment.service";
 
-const createNewsIntoDB = async (
-  newsData: TNews,
-  authenticatedUserId: string,
-) => {
+const createNewsIntoDB = async (newsData: TNews) => {
   if (!newsData.categoryId) {
-    throw new Error("categoryId is required");
+    throw new Error("Category Name is required");
   }
 
   const category = await Category.findById(newsData.categoryId).select(
@@ -42,6 +39,12 @@ const createNewsIntoDB = async (
 
   try {
     const result = await News.create(newData);
+
+    // news create success hole category er count barbe
+    await Category.findByIdAndUpdate(newsData.categoryId, {
+      $inc: { newsCount: 1 },
+    });
+
     return result;
   } catch (err: any) {
     if (err?.code === 11000) {
@@ -64,7 +67,7 @@ const getAllNewsFromDB = async (query: Record<string, unknown>) => {
     News.find({ contentType: { $eq: "Text" } }).populate([
       {
         path: "reporterId",
-        select: "name id",
+        select: "name id profileImage",
       },
       {
         path: "approvedBy",
@@ -416,8 +419,46 @@ const getPopularNewsFromBD = async (query: Record<string, unknown>) => {
   ];
 
   const newsQuery = new QueryBuilder(
-    News.find({ contentType: { $eq: "Text" } })
+    News.find({ contentType: { $eq: "Text" }, status: { $eq: "published" } })
       .sort({ views: -1 })
+      .populate([
+        {
+          path: "reporterId",
+          select: "name",
+        },
+        {
+          path: "approvedBy",
+          select: "role email",
+        },
+        {
+          path: "categoryId",
+          select: "categoryName",
+        },
+      ]),
+    query,
+  )
+    .search(searchAbleFields)
+    .filter()
+    .paginate()
+    .fields();
+
+  const result = await newsQuery.modelQuery;
+
+  return result;
+};
+
+const getRecentNewsFromDB = async (query: Record<string, unknown>) => {
+  const searchAbleFields = [
+    "title",
+    "shortDetails",
+    "content",
+    "location",
+    "tags",
+  ];
+
+  const newsQuery = new QueryBuilder(
+    News.find({ contentType: { $eq: "Text" }, status: { $eq: "published" } })
+      .sort({ createdAt: -1 })
       .populate([
         {
           path: "reporterId",
@@ -483,6 +524,37 @@ const getBothContent = async () => {
   ]);
   return result;
 };
+
+const getFeaturedNews = async () => {
+  const featuredCategories = await Category.find({ isFeatured: true }).select(
+    "_id",
+  );
+  const categoryIds = featuredCategories.map((c) => c._id);
+
+  const news = await News.find({
+    categoryId: { $in: categoryIds },
+    status: "published",
+  })
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .populate([
+      {
+        path: "reporterId",
+        select: "name id profileImage",
+      },
+      {
+        path: "approvedBy",
+        select: "role email",
+      },
+      {
+        path: "categoryId",
+        select: "categoryName",
+      },
+    ]);
+
+  return news;
+};
+
 export const NewsServices = {
   getBothContent,
   createNewsIntoDB,
@@ -498,5 +570,7 @@ export const NewsServices = {
   getMonthlyPostCountFromDB,
   incrementNewsViewInDB,
   getPopularNewsFromBD,
+  getRecentNewsFromDB,
+  getFeaturedNews,
   getNewsTotalViewsFromDB,
 };

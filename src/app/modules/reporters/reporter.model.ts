@@ -69,7 +69,7 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
     isActive: {
       type: String,
       enum: ["active", "blocked", "suspended", "pending", "rejected"],
-      default: "pending",
+      default: "active",
     },
   },
   {

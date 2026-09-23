@@ -5,6 +5,7 @@ export type TCategory = {
   description: string;
   isFeatured: boolean;
   isDeleted: boolean;
+  newsCount: number;
   createdAt: Date;
   updatedAt: Date;
 };

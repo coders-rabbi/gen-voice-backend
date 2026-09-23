@@ -14,7 +14,6 @@ const getWebAboutInfoFromDB = async () => {
 const updateWebAboutInfoFromDB = async (payload: Partial<IAboutFormValues>) => {
   const response = await About.findOneAndUpdate({}, payload, {
     returnDocument: "after",
-    runValidators: true,
   });
   return response;
 };

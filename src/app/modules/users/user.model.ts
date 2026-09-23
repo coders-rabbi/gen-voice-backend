@@ -24,7 +24,7 @@ const UserSchema = new Schema<TUser, UserModel>(
     isDeleted: { type: Boolean, default: false },
     isActive: {
       type: String,
-      enum: ["active", "blocked"],
+      enum: ["active", "blocked", "pending"],
       default: "active",
     },
   },
