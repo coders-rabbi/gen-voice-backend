@@ -185,7 +185,7 @@ const getNewsByReporterId = async (repId: string) => {
   const response = await News.find({ reporterId: repId }).populate([
     {
       path: "reporterId",
-      select: "name id",
+      select: "name id profileImage",
     },
     {
       path: "approvedBy",
@@ -208,7 +208,7 @@ const getNewsByCategoryIDFromDB = async (categoryId: string) => {
   const response = await News.find({ categoryId: categoryId }).populate([
     {
       path: "reporterId",
-      select: "name id",
+      select: "name id profileImage",
     },
     {
       path: "approvedBy",
