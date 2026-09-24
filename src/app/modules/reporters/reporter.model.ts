@@ -26,7 +26,7 @@ const ReporterSchema = new Schema<TReporter, ReporterModel>(
     },
     gender: {
       type: String,
-      enum: ["male", "female"],
+      enum: ["male", "female", "other"],
       required: true,
     },
     dateOfBirth: {

@@ -10,7 +10,7 @@ export type TReporter = {
   id: string;
   user: Types.ObjectId;
   name: TReporterName;
-  gender: "male" | "female";
+  gender: "male" | "female" | "other";
   dateOfBirth: Date;
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-";
   contactNo: string;

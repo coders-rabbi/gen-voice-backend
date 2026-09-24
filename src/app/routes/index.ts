@@ -16,6 +16,7 @@ import { pollRouters } from "../modules/poll/poll.route";
 import { pollResponseRouters } from "../modules/poll-response/poll-response.route";
 import { visitRouters } from "../modules/visitor/visit.route";
 import { SavedNewsRoutes } from "../modules/save-news/saveNews.route";
+import { WebFooterRoutes } from "../modules/web-footer/footer.route";
 
 const router = Router();
 
@@ -86,8 +87,12 @@ const modulesRoutes = [
   },
   {
     path: "/saved-news",
-    route: SavedNewsRoutes
-  }
+    route: SavedNewsRoutes,
+  },
+  {
+    path: "/web-footer",
+    route: WebFooterRoutes,
+  },
 ];
 
 modulesRoutes.forEach((route) => router.use(route.path, route.route));

@@ -10,7 +10,7 @@ export const ReporterValidationSchema = z.object({
   body: z.object({
     id: z.string().trim().min(1, "Reporter ID is required"),
     name: ReporterNameValidationSchema,
-    gender: z.enum(["male", "female", "others"], {
+    gender: z.enum(["male", "female", "other"], {
       error: "Gender must be either 'male', 'female' or 'others' ",
     }),
     dateOfBirth: z.coerce.date(),
@@ -49,7 +49,7 @@ export const updateReporterValidationSchema = z.object({
 
     gender: z
       .enum(["male", "female", "others"], {
-        error: "Gender must be either 'male', 'female' or 'others' ",
+        error: "Gender must be either 'male', 'female' or 'other' ",
       })
       .optional(),
 

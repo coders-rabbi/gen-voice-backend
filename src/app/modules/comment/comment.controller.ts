@@ -4,9 +4,13 @@ import sendResponse from "../../utils/sendreponse";
 import { commentServices } from "./comment.service";
 
 const createCommentController = catchAsync(async (req, res) => {
-  const payload = req.body;
-  console.log(payload);
+  const userId = req.user?._id;
+  const { newsId, comment } = req.body;
+
+  const payload = { newsId, comment, userId };
+
   const response = await commentServices.createCommentIntroBD(payload);
+
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,

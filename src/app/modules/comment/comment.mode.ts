@@ -3,8 +3,6 @@ import { TComment, TReplay } from "./comment.interface";
 
 const ReplaySchema = new Schema<TReplay>(
   {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, trim: true },
     comment: { type: String, required: true, trim: true },
   },
   { timestamps: true },
@@ -16,10 +14,14 @@ const CommentSchema = new Schema<TComment>(
       type: String,
       required: true,
       trim: true,
-      index: true, // দ্রুত query এর জন্য এখনো রাখা ভালো
+      index: true,
     },
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, trim: true },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     comment: { type: String, required: true, trim: true },
     replay: { type: [ReplaySchema], default: [] },
     isHidden: { type: Boolean, default: false },

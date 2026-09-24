@@ -1,18 +1,31 @@
 import { TCommentPyaload } from "./comment.constant";
 import { Comment } from "./comment.mode";
 
+const userPopulate = {
+  path: "userId",
+  select: "_id email role",
+};
+
 const createCommentIntroBD = async (payload: TCommentPyaload) => {
   const response = await Comment.create(payload);
-  return response;
+  return response.populate(userPopulate);
 };
 
 const getCommentFromDB = async () => {
-  const response = await Comment.find();
+  const response = await Comment.find()
+    .populate(userPopulate)
+    .sort({ createdAt: -1 });
   return response;
 };
 
 const getCommentByNewsId = async (id: string) => {
-  const response = await Comment.find({ newsId: id });
+  const response = await Comment.find({
+    newsId: id,
+    isDeleted: false,
+    isHidden: false,
+  })
+    .populate(userPopulate)
+    .sort({ createdAt: -1 });
   return response;
 };
 

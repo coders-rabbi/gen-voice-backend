@@ -424,7 +424,7 @@ const getPopularNewsFromBD = async (query: Record<string, unknown>) => {
       .populate([
         {
           path: "reporterId",
-          select: "name",
+          select: "name profileImage",
         },
         {
           path: "approvedBy",
@@ -462,7 +462,7 @@ const getRecentNewsFromDB = async (query: Record<string, unknown>) => {
       .populate([
         {
           path: "reporterId",
-          select: "name",
+          select: "name profileImage",
         },
         {
           path: "approvedBy",

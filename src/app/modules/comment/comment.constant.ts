@@ -1,5 +1,7 @@
+import { Types } from "mongoose";
+
 export type TCommentPyaload = {
-  name: string;
-  email: string;
+  newsId: string;
   comment: string;
+  userId: Types.ObjectId;
 };
