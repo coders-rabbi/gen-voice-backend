@@ -15,55 +15,65 @@ const createReporterIntoDB = async (reporter: TReporter) => {
 };
 
 const getAllReporterFromDB = async (query: Record<string, unknown>) => {
-  const searchAbleFields = ["email", "name.firstName", "presentAddress"];
+  const searchAbleFields = ["email", "name.firstName", "presentAddress", "contactNo"];
 
-  const reporterQuery = new QueryBuilder(
-    Reporter.find().populate({
-      path: "user",
-      select: "_id email role isDeleted isActive",
-    }),
-    query,
-  )
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  // ১. sort/paginate ছাড়া শুধু search + filter করে সব matching _id আনা
+  const { page: _p, limit: _l, sort: _s, fields: _f, ...rest } = query;
+
+  const idQuery = new QueryBuilder(Reporter.find(), rest)
     .search(searchAbleFields)
-    .filter()
-    .sort()
-    .paginate()
-    .fields();
+    .filter();
 
-  const result = await reporterQuery.modelQuery;
+  const matched = await idQuery.modelQuery.select("_id").lean();
+  const allIds = matched.map((r) => r._id);
+  const total = allIds.length;
 
-  // এই page-এ যতগুলো reporter এসেছে, শুধু তাদের _id গুলো নিয়ে news count বের করা
-  const reporterIds = result.map((reporter) => reporter._id);
-
+  // ২. সবার news count একবারে বের করা
   const newsCounts = await News.aggregate([
-    {
-      $match: {
-        reporterId: { $in: reporterIds },
-      },
-    },
-    {
-      $group: {
-        _id: "$reporterId",
-        count: { $sum: 1 },
-      },
-    },
+    { $match: { reporterId: { $in: allIds } } },
+    { $group: { _id: "$reporterId", count: { $sum: 1 } } },
   ]);
 
-  // দ্রুত lookup এর জন্য একটা Map বানানো: reporterId -> count
-  const countMap = new Map(
+  const countMap = new Map<string, number>(
     newsCounts.map((item) => [item._id.toString(), item.count]),
   );
 
-  // প্রতিটা reporter object-এর সাথে reporterNewsLength যোগ করা
-  const resultWithNewsCount = result.map((reporter) => {
-    const reporterObj = reporter.toObject();
-    return {
-      ...reporterObj,
-      reporterNewsLength: countMap.get(reporter._id.toString()) || 0,
-    };
+  // ৩. count অনুযায়ী sort (বেশি নিউজ আগে), তারপর paginate
+  const pageIds = [...allIds]
+    .sort(
+      (a, b) =>
+        (countMap.get(b.toString()) || 0) - (countMap.get(a.toString()) || 0),
+    )
+    .slice(skip, skip + limit);
+
+  // ৪. শুধু এই পেজের reporter গুলো populate করে আনা
+  const reporters = await Reporter.find({ _id: { $in: pageIds } }).populate({
+    path: "user",
+    select: "_id email role isDeleted isActive",
   });
 
-  return resultWithNewsCount;
+  const reporterMap = new Map(reporters.map((r) => [r._id.toString(), r]));
+
+  // ৫. sort করা order ঠিক রেখে count যোগ করা
+  const result = pageIds
+    .map((id) => {
+      const reporter = reporterMap.get(id.toString());
+      if (!reporter) return null;
+      return {
+        ...reporter.toObject(),
+        reporterNewsLength: countMap.get(id.toString()) || 0,
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    meta: { page, limit, total, totalPage: Math.ceil(total / limit) },
+    result,
+  };
 };
 
 const getSingleReporterUsingUserIdFromBD = async (userId: string) => {
@@ -90,14 +100,12 @@ const updateSingleReporterInfoFromDB = async (
 
   const updatedReporterData: Record<string, unknown> = {};
 
-  // only keep top-level fields that have a real value
   for (const [key, value] of Object.entries(remainingReporterData)) {
     if (value !== undefined && value !== null && value !== "") {
       updatedReporterData[key] = value;
     }
   }
 
-  // only keep nested "name" fields that have a real value
   if (name && typeof name === "object" && !Array.isArray(name)) {
     for (const [key, value] of Object.entries(name)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -111,10 +119,10 @@ const updateSingleReporterInfoFromDB = async (
   }
 
   const result = await Reporter.findByIdAndUpdate(
-    id, // MongoDB _id
+    id,
     { $set: updatedReporterData },
     {
-      new: true, // updated document ফেরত পাবেন
+      returnDocument: "after",
       runValidators: true,
     },
   );
