@@ -15,4 +15,3 @@ export default {
 };
 
 dotenv.config({ path: path.join(process.cwd(), ".env") });
-console.log("ENV LOADED:", process.env.JWT_ACCESS_SECRET ? "YES" : "NO");
