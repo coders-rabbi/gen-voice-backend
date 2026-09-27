@@ -7,6 +7,8 @@ import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 import { createToken } from "./auth.utils";
 import { Admin } from "../admin/admin.model";
 import config from "../../config";
+import { sendPasswordResetEmail } from "../../../sendEmail";
+import { StringDecoder } from "string_decoder";
 
 const loginUser = async (payload: TLoginUser) => {
   const isUserExist = await User.findOne({ email: payload?.email }).select(
@@ -16,7 +18,6 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(StatusCodes.NOT_FOUND, "This user is not found!");
   }
 
-  
   // const isPending = isUserExist?.isActive;
   // if (isPending === "pending") {
   //   throw new AppError(StatusCodes.FORBIDDEN, "This user is pending! Need to approval by admin");
@@ -217,9 +218,95 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const fortagePasswordService = async (email: string) => {
+  const isUserExist = await User.findOne({ email });
+  console.log("After findOne", isUserExist);
+  if (!isUserExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, `This user is not found!`);
+  }
+
+  const isDeleted = isUserExist?.isDeleted;
+  if (isDeleted) {
+    throw new AppError(StatusCodes.FORBIDDEN, `This user is deleted!`);
+  }
+
+  const isBlocked = isUserExist?.isActive;
+  if (isBlocked === "blocked") {
+    throw new AppError(StatusCodes.FORBIDDEN, `This user is blocked!`);
+  }
+
+  const jwtPayload = {
+    _id: isUserExist?._id,
+    email: isUserExist?.email,
+    role: isUserExist?.role,
+    isDeleted: isUserExist.isDeleted,
+  };
+
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_token as string,
+    "10m",
+  );
+
+  const resetUILink = `https://genvoice.news/reset-password/?email=${isUserExist?.email}&token=${resetToken}`;
+
+  await sendPasswordResetEmail(isUserExist.email, resetUILink);
+  return { resetUILink };
+};
+
+const resetPasswordService = async (
+  payload: { email: string; newPassword: string },
+  token: string,
+) => {
+  const isUserExist = await User.findOne({ email: payload?.email });
+
+  if (!isUserExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, `This user is not found!`);
+  }
+
+  const isDeleted = isUserExist?.isDeleted;
+  if (isDeleted) {
+    throw new AppError(StatusCodes.FORBIDDEN, `This user is deleted!`);
+  }
+
+  const isBlocked = isUserExist?.isActive;
+  if (isBlocked === "blocked") {
+    throw new AppError(StatusCodes.FORBIDDEN, `This user is blocked!`);
+  }
+
+  let decoded: JwtPayload;
+
+  try {
+    decoded = jwt.verify(
+      token,
+      config.jwt_access_token as string,
+    ) as JwtPayload;
+  } catch (err) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, "Expired token");
+  }
+
+  if (payload?.email !== decoded?.email) {
+    throw new AppError(StatusCodes.FORBIDDEN, "You are forbidden");
+  }
+
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.findOneAndUpdate(
+    {
+      email: payload.email,
+    },
+    { password: newHashedPassword, passwordChangeAt: new Date() },
+  );
+};
+
 export const AuthService = {
   loginUser,
   adminLogin,
   passwordChange,
   refreshToken,
+  fortagePasswordService,
+  resetPasswordService,
 };

@@ -65,9 +65,47 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 });
 
+const forgatePassword = catchAsync(async (req, res) => {
+  const result = await AuthService.fortagePasswordService(req.body.email);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Reset link is generated successful",
+    data: result,
+  });
+});
+
+const resetPasswordController = catchAsync(async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized access");
+  }
+
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized access");
+  }
+
+  const result = await AuthService.resetPasswordService(
+    req.body,
+    token as string,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Password reset successfull",
+    data: result,
+  });
+});
+
 export const AuthControllers = {
   loginUserController,
   adminLoginController,
   changePassword,
   refreshToken,
+  forgatePassword,
+  resetPasswordController,
 };

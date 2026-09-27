@@ -35,4 +35,17 @@ router.post(
   AuthControllers.refreshToken,
 );
 
+router.post(
+  "/forgate-password",
+  validateRequest(AuthValidations.forgatePasswordValidationSchema),
+  AuthControllers.forgatePassword,
+);
+
+router.post(
+  "/reset-password",
+  validateRequest(AuthValidations.resetPasswordValidationSchema),
+  AuthControllers.resetPasswordController,
+);
+
+
 export const authRoutes = router;
