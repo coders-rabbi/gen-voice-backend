@@ -1,4 +1,8 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
+
+// Node.js-কে বলে দাও IPv4 আগে ব্যবহার করতে
+dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -8,7 +12,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-  connectionTimeout: 10000, // 10s এর মধ্যে কানেকশন না হলে fail করবে
+  connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 10000,
 });
