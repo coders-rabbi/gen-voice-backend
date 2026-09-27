@@ -99,6 +99,7 @@ const getAllNewsFromDB = async (query: Record<string, unknown>) => {
 
   return dataWithCommentCount;
 };
+
 const getAllVideoNewsFromDB = async (query: Record<string, unknown>) => {
   const searchAbleFiends = [
     "title",
@@ -507,22 +508,49 @@ const getNewsTotalViewsFromDB = async () => {
   return result[0]?.totalViews || 0;
 };
 
-const getBothContent = async () => {
-  const result = await News.find().populate([
-    {
-      path: "reporterId",
-      select: "name id",
-    },
-    {
-      path: "approvedBy",
-      select: "role email",
-    },
-    {
-      path: "categoryId",
-      select: "categoryName",
-    },
-  ]);
-  return result;
+const getBothContent = async (query: Record<string, unknown>) => {
+  const searchAbleFiends = [
+    "title",
+    "shortDetails",
+    "content",
+    "location",
+    "tags",
+  ];
+  const newsQuery = new QueryBuilder(
+    News.find().populate([
+      {
+        path: "reporterId",
+        select: "name id profileImage",
+      },
+      {
+        path: "approvedBy",
+        select: "role email",
+      },
+      {
+        path: "categoryId",
+        select: "categoryName",
+      },
+    ]),
+    query,
+  )
+    .search(searchAbleFiends)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await newsQuery.modelQuery;
+  const newsIds = result.map((item) => item.newsId);
+
+  const commentCounts =
+    await commentServices.getCommentCountsByNewsIds(newsIds);
+
+  const dataWithCommentCount = result.map((item) => ({
+    ...item.toObject(),
+    commentCount: commentCounts[item.newsId] || 0,
+  }));
+
+  return dataWithCommentCount;
 };
 
 const getFeaturedNews = async () => {

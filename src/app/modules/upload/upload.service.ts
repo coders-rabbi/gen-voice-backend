@@ -1,5 +1,3 @@
-// src/modules/upload/upload.service.ts
-
 import cloudinary from "../../config/cloudinary";
 import { UploadModel, IUpload, TUploadType } from "./upload.model";
 import { UploadApiResponse } from "cloudinary";

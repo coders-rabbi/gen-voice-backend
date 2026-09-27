@@ -19,9 +19,7 @@ const createNewsController = catchAsync(async (req, res) => {
   }
 
   const newsData = req.body;
-  const result = await NewsServices.createNewsIntoDB(
-    newsData,
-  );
+  const result = await NewsServices.createNewsIntoDB(newsData);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -31,7 +29,7 @@ const createNewsController = catchAsync(async (req, res) => {
   });
 });
 
-const getAllNewsController = catchAsync(async (req, res, next) => {
+const getAllNewsController = catchAsync(async (req, res) => {
   const result = await NewsServices.getAllNewsFromDB(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -201,14 +199,13 @@ const newsTotalViewController = catchAsync(async (req, res) => {
 });
 
 const bothContentcontroller = catchAsync(async (req, res) => {
-  const result = await NewsServices.getBothContent();
+  const result = await NewsServices.getBothContent(req.query);
   res.status(200).json({
     success: true,
     message: "Succesfully retrive a news from the database",
     data: result,
   });
 });
-
 
 const featuredNewsController = catchAsync(async (req, res) => {
   const response = await NewsServices.getFeaturedNews();

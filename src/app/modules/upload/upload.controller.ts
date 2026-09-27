@@ -1,5 +1,3 @@
-// src/modules/upload/upload.controller.ts
-
 import { Request, Response } from "express";
 import * as uploadService from "./upload.service";
 
@@ -12,8 +10,6 @@ export const uploadFileController = async (req: Request, res: Response) => {
       });
     }
 
-    // Adjust this if you attach the reporter/user id differently
-    // (e.g. from an auth middleware: req.user?.id)
     const uploadedBy = req.body?.reporterId as string | undefined;
 
     const uploadPayload: Parameters<typeof uploadService.uploadFile>[0] = {
