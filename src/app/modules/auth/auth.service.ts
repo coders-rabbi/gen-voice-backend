@@ -248,7 +248,7 @@ const fortagePasswordService = async (email: string) => {
     "10m",
   );
 
-  const resetUILink = `http://localhost:3000/reset-password/?email=${isUserExist?.email}&token=${resetToken}`;
+  const resetUILink = `https://genvoice.news/reset-password/?email=${isUserExist?.email}&token=${resetToken}`;
 
   try {
     await sendPasswordResetEmail(isUserExist.email, resetUILink);
