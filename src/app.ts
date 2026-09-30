@@ -13,7 +13,6 @@ export const port = 3000;
 //parser
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
 const allowedOrigins = [
   "http://localhost:3000",
   "https://www.genvoice.news",

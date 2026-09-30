@@ -15,17 +15,16 @@ const createReporterController = catchAsync(async (req, res, next) => {
   });
 });
 
-const getAllReporterController = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await ReporterServices.getAllReporterFromDB(req.query);
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "Reporter successfully retrive from the database",
-      data: result,
-    });
-  },
-);
+const getAllReporterController = catchAsync(async (req, res) => {
+  console.log(req.cookies)
+  const result = await ReporterServices.getAllReporterFromDB(req.query);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Reporter successfully retrive from the database",
+    data: result,
+  });
+});
 
 const getSingleReporterUsingReportIdController = catchAsync(
   async (req, res) => {
