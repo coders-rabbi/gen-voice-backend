@@ -1,3 +1,4 @@
+import { Reporter } from "../reporters/reporter.model";
 import { TCommentPyaload } from "./comment.constant";
 import { Comment } from "./comment.mode";
 
@@ -19,14 +20,34 @@ const getCommentFromDB = async () => {
 };
 
 const getCommentByNewsId = async (id: string) => {
-  const response = await Comment.find({
+  const comments = await Comment.find({
     newsId: id,
     isDeleted: false,
     isHidden: false,
   })
-    .populate(userPopulate)
-    .sort({ createdAt: -1 });
-  return response;
+    .populate(userPopulate) // sudhu _id email role
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const userIds = comments.map((c: any) => c.userId?._id).filter(Boolean);
+
+  const reporters = await Reporter.find({ user: { $in: userIds } })
+    .select("user profileImage")
+    .lean();
+
+  const imageMap = new Map(
+    reporters.map((r: any) => [r.user.toString(), r.profileImage]),
+  );
+
+  return comments.map((c: any) => ({
+    ...c,
+    userId: c.userId
+      ? {
+          ...c.userId,
+          profileImage: imageMap.get(c.userId._id.toString()) ?? null,
+        }
+      : c.userId,
+  }));
 };
 
 const getCommentCountsByNewsIds = async (
